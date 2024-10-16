@@ -1,8 +1,6 @@
-use std::collections::{HashMap, HashSet};
 use dpp::document::{Document, DocumentV0Getters};
 use dpp::fee::Credits;
 use dpp::identifier::Identifier;
-use dpp::platform_value::Bytes32;
 use dpp::prelude::IdentityNonce;
 use dpp::state_transition::documents_batch_transition::{DocumentCreateTransition, DocumentsBatchTransition, DocumentsBatchTransitionV0};
 use dpp::state_transition::documents_batch_transition::document_base_transition::DocumentBaseTransition;
@@ -10,10 +8,6 @@ use dpp::state_transition::documents_batch_transition::document_base_transition:
 use dpp::state_transition::documents_batch_transition::document_create_transition::DocumentCreateTransitionV0;
 use dpp::state_transition::documents_batch_transition::document_transition::DocumentTransition;
 use dpp::state_transition::StateTransition;
-use dpp::util::entropy_generator::EntropyGenerator;
-use dpp::version::fee::vote_resolution_fund_fees::v1::VOTE_RESOLUTION_FUND_FEES_VERSION1;
-use rand::prelude::StdRng;
-use rand::SeedableRng;
 use crate::factories::Factories;
 
 impl Factories {

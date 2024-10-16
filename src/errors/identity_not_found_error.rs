@@ -1,6 +1,6 @@
 use std::fmt;
 use std::fmt::Formatter;
-use dpp::dashcore::{PubkeyHash, PublicKey};
+use dpp::dashcore::{PubkeyHash};
 use dpp::identifier::Identifier;
 use dpp::platform_value::string_encoding::Encoding::Base58;
 

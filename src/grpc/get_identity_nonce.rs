@@ -1,5 +1,4 @@
-use dapi_grpc::platform::v0::{get_identity_keys_response, get_identity_nonce_request, get_identity_nonce_response, GetIdentityNonceRequest};
-use dapi_grpc::platform::v0::get_identity_keys_response::get_identity_keys_response_v0;
+use dapi_grpc::platform::v0::{get_identity_nonce_request, get_identity_nonce_response, GetIdentityNonceRequest};
 use dapi_grpc::platform::v0::get_identity_nonce_request::GetIdentityNonceRequestV0;
 use dapi_grpc::platform::v0::get_identity_nonce_response::get_identity_nonce_response_v0;
 use dpp::identifier::Identifier;

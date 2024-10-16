@@ -1,4 +1,3 @@
-use dpp::identity::Identity;
 use rs_dapi_client::{AddressList, DapiClient, RequestSettings};
 
 mod get_identity_by_public_key_hash;
@@ -21,9 +20,5 @@ impl PlatformGRPCClient {
             ),
         };
     }
-}
-
-pub trait PlatformGRPCProtocol {
-    fn get_identity_by_public_key(&self) -> Identity;
 }
 

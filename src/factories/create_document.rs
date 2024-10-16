@@ -1,20 +1,8 @@
 use std::time::{SystemTime, UNIX_EPOCH};
 use dpp::document::{Document, DocumentV0, INITIAL_REVISION};
 use dpp::identifier::Identifier;
-use dpp::platform_value::{Bytes32, Value};
-use dpp::state_transition::documents_batch_transition::{DocumentCreateTransition, DocumentsBatchTransition, DocumentsBatchTransitionV0};
-use dpp::state_transition::documents_batch_transition::document_base_transition::DocumentBaseTransition;
-use dpp::state_transition::documents_batch_transition::document_base_transition::v0::DocumentBaseTransitionV0;
-use dpp::state_transition::documents_batch_transition::document_create_transition::DocumentCreateTransitionV0;
-use dpp::state_transition::documents_batch_transition::document_transition::DocumentTransition;
-use dpp::util::entropy_generator::EntropyGenerator;
-use rand::prelude::StdRng;
-use rand::SeedableRng;
+use dpp::platform_value::{Value};
 use crate::factories::Factories;
-use crate::utils::MyDefaultEntropyGenerator;
-
-struct DocumentFactory {
-}
 
 impl Factories {
     pub fn create_document(

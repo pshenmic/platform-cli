@@ -1,8 +1,6 @@
-use dapi_grpc::platform::v0::{get_identity_keys_response, get_identity_contract_nonce_request, GetIdentityContractNonceRequest, get_identity_contract_nonce_response};
-use dapi_grpc::platform::v0::get_identity_keys_response::get_identity_keys_response_v0;
+use dapi_grpc::platform::v0::{get_identity_contract_nonce_request, GetIdentityContractNonceRequest, get_identity_contract_nonce_response};
 use dapi_grpc::platform::v0::get_identity_contract_nonce_request::GetIdentityContractNonceRequestV0;
 use dapi_grpc::platform::v0::get_identity_contract_nonce_response::get_identity_contract_nonce_response_v0;
-use dapi_grpc::platform::v0::get_identity_nonce_response::get_identity_nonce_response_v0;
 use dpp::identifier::Identifier;
 use dpp::prelude::IdentityNonce;
 use rs_dapi_client::{DapiRequestExecutor, RequestSettings};

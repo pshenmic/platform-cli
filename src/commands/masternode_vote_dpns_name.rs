@@ -1,6 +1,4 @@
 use std::fs;
-use base64::Engine;
-use base64::engine::general_purpose;
 use clap::Parser;
 use dpp::dashcore::hashes::Hash;
 use dpp::dashcore::key::Secp256k1;
@@ -8,13 +6,12 @@ use dpp::dashcore::{PrivateKey, ProTxHash};
 use dpp::identifier::{Identifier, MasternodeIdentifiers};
 use dpp::identity::accessors::IdentityGettersV0;
 use dpp::identity::hash::IdentityPublicKeyHashMethodsV0;
-use dpp::identity::{IdentityPublicKey, Purpose};
-use dpp::platform_value::string_encoding::Encoding::{Base58, Base64, Hex};
+use dpp::identity::{IdentityPublicKey};
+use dpp::platform_value::string_encoding::Encoding::{Base58};
 use dpp::platform_value::Value;
 use dpp::serialization::PlatformSerializable;
 use dpp::state_transition::StateTransition;
 use dpp::voting::vote_choices::resource_vote_choice::ResourceVoteChoice;
-use simple_signer::signer::SimpleSigner;
 use crate::errors::cli_argument_missing_error::CommandLineArgumentMissingError;
 use crate::errors::Error;
 use crate::errors::identity_public_key_hash_mismatch_error::IdentityPublicKeyHashMismatchError;
@@ -73,8 +70,6 @@ impl MasternodeVoteDPNSNameCommand {
         let public_key = private_key.public_key(&secp);
         let pro_tx_hash = ProTxHash::from_hex(&self.pro_tx_hash).expect("Could not decode pro tx hash");
         let voting_address = public_key.pubkey_hash().to_byte_array();
-
-        let pro_tx_hash = ProTxHash::from_hex(&self.pro_tx_hash).unwrap();
 
         let buffer: [u8; 32] = <[u8; 32]>::try_from(hex::decode(&self.pro_tx_hash).unwrap()).unwrap();
 

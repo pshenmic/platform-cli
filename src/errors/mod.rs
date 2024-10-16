@@ -1,6 +1,4 @@
-use std::fmt::{Debug, Display, Formatter};
-use dapi_grpc::mock::Mockable;
-use rs_dapi_client::DapiClientError;
+use std::fmt::{Display, Formatter};
 use crate::errors::cli_argument_missing_error::CommandLineArgumentMissingError;
 use crate::errors::dapi_response_error::DapiResponseError;
 use crate::errors::identity_not_found_error::{IdentityNotFoundError};

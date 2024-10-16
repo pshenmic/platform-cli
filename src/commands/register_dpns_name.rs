@@ -26,7 +26,6 @@ use log::info;
 use rand::rngs::StdRng;
 use rand::{Rng, SeedableRng};
 use sha256::digest;
-use simple_signer::signer::SimpleSigner;
 use tokio::time::sleep;
 use crate::errors::cli_argument_missing_error::CommandLineArgumentMissingError;
 use crate::errors::Error;
@@ -35,6 +34,7 @@ use crate::factories::create_documents_batch::IdentityStateTransition;
 use crate::factories::Factories;
 use crate::grpc::PlatformGRPCClient;
 use crate::utils::MyDefaultEntropyGenerator;
+use regex::Regex;
 
 /// Register DPNS name
 #[derive(Parser)]
@@ -103,9 +103,6 @@ impl RegisterDPNSNameCommand {
             .ok_or(Error::IdentityPublicKeyHashMismatchError(IdentityPublicKeyHashMismatchError::from((identifier, public_key.pubkey_hash()))))?
             .clone();
 
-        let json_value = JsonValue::from_str(&dpns_data_contract_data).expect("Could not decode DPNS data contract json");
-        let raw_data_contract: Value = Value::from(json_value);
-
         let identity_contract_nonce = platform_grpc_client.get_identity_contract_nonce(identity.id(), dpns_contract.id()).await;
 
         let mut rng = StdRng::from_entropy();
@@ -162,14 +159,20 @@ impl RegisterDPNSNameCommand {
               "normalizedParentDomainName": "dash"
         }), Vec::from(entropy));
 
-        let prefunding_voting_balance = Some((String::from("parentNameAndLabel"), VOTE_RESOLUTION_FUND_FEES_VERSION1.contested_document_vote_resolution_fund_required_amount));
+
+        let re = Regex::new(r"^[a-zA-Z01-]{3,19}$").unwrap();
+
+        let prefunding_voting_balance = match !re.is_match(&self.name) {
+            true => {Some((String::from("parentNameAndLabel"), VOTE_RESOLUTION_FUND_FEES_VERSION1.contested_document_vote_resolution_fund_required_amount))},
+            false => None
+        };
 
         let domain_document_transition = Factories::document_create_transition(
             domain_document,
             "domain",
             dpns_contract.id(),
             identity_contract_nonce.add(2),
-            Vec::from(entropy), None);
+            Vec::from(entropy), prefunding_voting_balance);
 
         let mut domain_state_transition = StateTransition::from(IdentityStateTransition{
             identity: identity.id(),

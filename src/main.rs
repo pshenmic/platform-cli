@@ -6,8 +6,6 @@ pub(crate) mod utils;
 mod errors;
 mod logger;
 
-use std::{str::FromStr};
-use std::future::Future;
 use clap::{Parser, Subcommand};
 use crate::commands::masternode_vote_dpns_name::MasternodeVoteDPNSNameCommand;
 use crate::commands::register_dpns_name::RegisterDPNSNameCommand;
@@ -43,10 +41,8 @@ async fn main() {
         MyCommand::MasternodeVoteDPNSName(x) => x.run().await,
     };
 
-    let a = match result {
-        Ok(_) => {
-            println!()
-        }
+    match result {
+        Ok(_) => (),
         Err(err) => {
             println!("Error: {}", err)
         }

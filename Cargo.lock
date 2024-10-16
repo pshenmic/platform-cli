@@ -264,6 +264,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e4fa97bb310c33c811334143cf64c5bb2b7b3c06e453db6b095d7061eff8f113"
 dependencies = [
  "fastrand",
+ "gloo-timers",
  "tokio",
 ]
 
@@ -826,7 +827,7 @@ dependencies = [
 
 [[package]]
 name = "dapi-grpc"
-version = "1.4.0-dev.8"
+version = "1.4.1"
 dependencies = [
  "dapi-grpc-macros",
  "futures-core",
@@ -842,7 +843,7 @@ dependencies = [
 
 [[package]]
 name = "dapi-grpc-macros"
-version = "1.4.0-dev.8"
+version = "1.4.1"
 dependencies = [
  "heck",
  "quote",
@@ -947,7 +948,7 @@ dependencies = [
 
 [[package]]
 name = "dashpay-contract"
-version = "1.4.0-dev.8"
+version = "1.4.1"
 dependencies = [
  "platform-value",
  "platform-version",
@@ -957,7 +958,7 @@ dependencies = [
 
 [[package]]
 name = "data-contracts"
-version = "1.4.0-dev.8"
+version = "1.4.1"
 dependencies = [
  "dashpay-contract",
  "dpns-contract",
@@ -1058,7 +1059,7 @@ dependencies = [
 
 [[package]]
 name = "dpns-contract"
-version = "1.4.0-dev.8"
+version = "1.4.1"
 dependencies = [
  "platform-value",
  "platform-version",
@@ -1068,7 +1069,7 @@ dependencies = [
 
 [[package]]
 name = "dpp"
-version = "1.4.0-dev.8"
+version = "1.4.1"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -1115,7 +1116,7 @@ dependencies = [
 
 [[package]]
 name = "drive"
-version = "1.4.0-dev.8"
+version = "1.4.1"
 dependencies = [
  "arc-swap",
  "base64 0.22.1",
@@ -1345,7 +1346,7 @@ checksum = "e8c02a5121d4ea3eb16a80748c74f5549a5665e4c21333c6098f283870fbdea6"
 
 [[package]]
 name = "feature-flags-contract"
-version = "1.4.0-dev.8"
+version = "1.4.1"
 dependencies = [
  "platform-value",
  "platform-version",
@@ -1565,6 +1566,18 @@ name = "glob"
 version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d2fabcfbdc87f4758337ca535fb41a6d701b65693ce38287d856d1674551ec9b"
+
+[[package]]
+name = "gloo-timers"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bbb143cf96099802033e0d4f4963b19fd2e0b728bcf076cd9cf7f6634f092994"
+dependencies = [
+ "futures-channel",
+ "futures-core",
+ "js-sys",
+ "wasm-bindgen",
+]
 
 [[package]]
 name = "grovedb"
@@ -2095,7 +2108,7 @@ dependencies = [
 
 [[package]]
 name = "json-schema-compatibility-validator"
-version = "1.4.0-dev.8"
+version = "1.4.1"
 dependencies = [
  "json-patch",
  "once_cell",
@@ -2245,7 +2258,7 @@ dependencies = [
 
 [[package]]
 name = "masternode-reward-shares-contract"
-version = "1.4.0-dev.8"
+version = "1.4.1"
 dependencies = [
  "platform-value",
  "platform-version",
@@ -2688,6 +2701,7 @@ dependencies = [
  "http",
  "log",
  "rand",
+ "regex",
  "rs-dapi-client",
  "sha256",
  "simple-signer",
@@ -2698,7 +2712,7 @@ dependencies = [
 
 [[package]]
 name = "platform-serialization"
-version = "1.4.0-dev.8"
+version = "1.4.1"
 dependencies = [
  "bincode",
  "platform-version",
@@ -2706,7 +2720,7 @@ dependencies = [
 
 [[package]]
 name = "platform-serialization-derive"
-version = "1.4.0-dev.8"
+version = "1.4.1"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2716,7 +2730,7 @@ dependencies = [
 
 [[package]]
 name = "platform-value"
-version = "1.4.0-dev.8"
+version = "1.4.1"
 dependencies = [
  "base64 0.22.1",
  "bincode",
@@ -2737,7 +2751,7 @@ dependencies = [
 
 [[package]]
 name = "platform-version"
-version = "1.4.0-dev.8"
+version = "1.4.1"
 dependencies = [
  "bincode",
  "grovedb-version",
@@ -2748,7 +2762,7 @@ dependencies = [
 
 [[package]]
 name = "platform-versioning"
-version = "1.4.0-dev.8"
+version = "1.4.1"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -3120,7 +3134,7 @@ dependencies = [
 
 [[package]]
 name = "rs-dapi-client"
-version = "1.4.0-dev.8"
+version = "1.4.1"
 dependencies = [
  "backon",
  "chrono",
@@ -3501,7 +3515,7 @@ checksum = "e3a9fe34e3e7a50316060351f37187a3f546bce95496156754b601a5fa71b76e"
 
 [[package]]
 name = "simple-signer"
-version = "1.4.0-dev.8"
+version = "1.4.1"
 dependencies = [
  "base64 0.22.1",
  "bincode",
@@ -4538,7 +4552,7 @@ dependencies = [
 
 [[package]]
 name = "withdrawals-contract"
-version = "1.4.0-dev.8"
+version = "1.4.1"
 dependencies = [
  "num_enum 0.5.11",
  "platform-value",

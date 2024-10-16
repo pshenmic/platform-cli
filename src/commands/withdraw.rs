@@ -1,5 +1,4 @@
 use std::fs;
-use base64::engine::general_purpose;
 use clap::Parser;
 use dpp::dashcore::{PrivateKey};
 use dpp::dashcore::hashes::Hash;
@@ -14,7 +13,6 @@ use dpp::serialization::{PlatformSerializable};
 use dpp::state_transition::identity_credit_withdrawal_transition::v1::IdentityCreditWithdrawalTransitionV1;
 use dpp::state_transition::StateTransition;
 use dpp::withdrawal::Pooling;
-use simple_signer::signer::SimpleSigner;
 use log::info;
 use sha256::digest;
 use crate::errors::cli_argument_missing_error::CommandLineArgumentMissingError;
@@ -65,7 +63,6 @@ impl WithdrawCommand {
         }
 
         let secp = Secp256k1::new();
-        let mut signer = SimpleSigner::default();
         let bls = dpp::native_bls::NativeBlsModule {};
 
         let private_key_data = fs::read_to_string(&self.private_key).expect("Unable to read file");

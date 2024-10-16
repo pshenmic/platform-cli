@@ -1,13 +1,12 @@
-use dapi_grpc::platform::v0::{get_identity_by_public_key_hash_request, get_identity_by_public_key_hash_response, GetIdentityByPublicKeyHashRequest, GetIdentityByPublicKeyHashResponse};
+use dapi_grpc::platform::v0::{get_identity_by_public_key_hash_request, get_identity_by_public_key_hash_response, GetIdentityByPublicKeyHashRequest};
 use dapi_grpc::platform::v0::get_identity_by_public_key_hash_request::GetIdentityByPublicKeyHashRequestV0;
 use dapi_grpc::platform::v0::get_identity_by_public_key_hash_response::get_identity_by_public_key_hash_response_v0;
 use dpp::dashcore::hashes::Hash;
-use dpp::dashcore::{PubkeyHash, PublicKey};
+use dpp::dashcore::{PubkeyHash};
 use dpp::identity::Identity;
 use dpp::serialization::PlatformDeserializable;
 use rs_dapi_client::{DapiClientError, DapiRequestExecutor, RequestSettings};
 use rs_dapi_client::address_list::AddressListError;
-use rs_dapi_client::transport::{TransportClient, TransportRequest};
 use tonic::Code;
 use crate::errors::dapi_response_error::DapiResponseError;
 use crate::errors::Error;
@@ -52,12 +51,12 @@ impl PlatformGRPCClient {
             })
             .map_err(|dapi_client_error| {
             match dapi_client_error {
-                DapiClientError::Transport(status, address) => {
+                DapiClientError::Transport(status, _) => {
                     if status.code() == Code::NotFound {
-                        return (Error::IdentityNotFoundError(IdentityNotFoundError::from(public_key_hash)))
+                        return Error::IdentityNotFoundError(IdentityNotFoundError::from(public_key_hash))
                     }
 
-                    return (Error::DapiResponseError(DapiResponseError::from(format!("Unknown DAPI Response, status code: {}, message: {}", status.code(), status.message()).as_str())))
+                    return Error::DapiResponseError(DapiResponseError::from(format!("Unknown DAPI Response, status code: {}, message: {}", status.code(), status.message()).as_str()))
                 }
                 DapiClientError::NoAvailableAddresses => {
                     return Error::DapiResponseError(DapiResponseError::from("No available addresses"))
