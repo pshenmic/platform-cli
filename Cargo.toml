@@ -1,0 +1,23 @@
+[package]
+name = "platform-cli"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap = { version = "4.5.19", features = ["derive"] }
+tokio = { version = "1.40.0", features = ["rt", "rt-multi-thread", "macros"] }
+http = "1.1.0"
+dpp = { path = "../../WebstormProjects/platform/packages/rs-dpp" , features = ["state-transition-signing"]}
+drive = { path = "../../WebstormProjects/platform/packages/rs-drive" }
+rs-dapi-client = { path = "../../WebstormProjects/platform/packages/rs-dapi-client" }
+dapi-grpc = { path = "../../WebstormProjects/platform/packages/dapi-grpc" }
+hex = "0.4.3"
+simple-signer = { path = "../../WebstormProjects/platform/packages/simple-signer" }
+tonic-build = "0.12.3"
+tonic = "0.12.3"
+base64 = "0.21.2"
+sha256 = "1.4.0"
+rand = "0.8.5"
+getrandom = "0.2.15"
+anyhow = "1.0.89"
+log = "0.4.22"
