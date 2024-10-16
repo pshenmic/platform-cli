@@ -13,6 +13,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+
       - name: Install protoc
         id: deps-protoc
         shell: bash
@@ -22,5 +23,6 @@ jobs:
           unzip -o /tmp/protoc.zip -d ${HOME}/.local
           echo "PROTOC=${HOME}/.local/bin/protoc" >> $GITHUB_ENV
           export PATH="${PATH}:${HOME}/.local/bin"
+
       - name: Build
         run: cargo build --verbose
