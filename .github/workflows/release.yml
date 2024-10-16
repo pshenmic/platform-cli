@@ -28,10 +28,10 @@ jobs:
         run: rustup target add x86_64-unknown-linux-gnu aarch64-unknown-linux-gnu x86_64-apple-darwin aarch64-apple-darwin
 
       - name: Build for Linux x86
-        run: cargo build -r --target=x86_64-unknown-linux-gnu --verbose && mv target/aarch64-apple-darwin/platform-cli ./platform-cli_gnu-x86_64
+        run: cargo build -r --target=x86_64-unknown-linux-gnu --verbose && mv target/x86_64-unknown-linux-gnu/platform-cli ./platform-cli_gnu-x86_64
 
       - name: Build for Linux arm64
-        run: cargo build -r --target=aarch64-unknown-linux-gnu --verbose && mv target/aarch64-unknown-linux-gnu/platform-cli ./platform-cli-gnu-arm64
+        run: cargo build -r --target=aarch64-unknown-linux-gnu --verbose && mv target/unknown-linux-gnu/platform-cli ./platform-cli-gnu-arm64
 
       - name: Build for Apple x86
         run: cargo build -r --target=x86_64-apple-darwin --verbose && mv target/x86_64-apple-darwin/platform-cli ./platform-cli_darwin-x86_64
