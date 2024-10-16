@@ -40,7 +40,7 @@ jobs:
 #        run: cargo build -r --target=aarch64-apple-darwin --verbose && mv target/aarch64-apple-darwin/platform-cli ./platform-cli_arm64-darwin
 
       - name: Build for Apple Silicon
-        run: touch asset.txt
+        run: echo sampletext >  asset.txt
 
       - uses: softprops/action-gh-release@v2
         with:
