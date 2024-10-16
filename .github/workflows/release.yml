@@ -38,7 +38,7 @@ jobs:
 
       - name: Build for Apple Silicon
         run: cargo build -r --target=aarch64-apple-darwin --verbose && mv target/aarch64-apple-darwin/platform-cli ./platform-cli_darwin-arm64
-
+
       - uses: softprops/action-gh-release@v2
         with:
           files: |
