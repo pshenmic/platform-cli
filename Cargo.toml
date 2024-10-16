@@ -4,15 +4,15 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+drive = { git = "https://github.com/dashpay/platform", branch = "fix/address-list-error"}
+dpp = { git = "https://github.com/dashpay/platform", branch = "fix/address-list-error" , features = ["state-transition-signing"]}
+rs-dapi-client = { git = "https://github.com/dashpay/platform", branch = "fix/address-list-error" }
+dapi-grpc = { git = "https://github.com/dashpay/platform", branch = "fix/address-list-error" }
+simple-signer = { git = "https://github.com/dashpay/platform", branch = "fix/address-list-error" }
 clap = { version = "4.5.19", features = ["derive"] }
 tokio = { version = "1.40.0", features = ["rt", "rt-multi-thread", "macros"] }
 http = "1.1.0"
-dpp = { path = "../../WebstormProjects/platform/packages/rs-dpp" , features = ["state-transition-signing"]}
-drive = { path = "../../WebstormProjects/platform/packages/rs-drive" }
-rs-dapi-client = { path = "../../WebstormProjects/platform/packages/rs-dapi-client" }
-dapi-grpc = { path = "../../WebstormProjects/platform/packages/dapi-grpc" }
 hex = "0.4.3"
-simple-signer = { path = "../../WebstormProjects/platform/packages/simple-signer" }
 tonic-build = "0.12.3"
 tonic = "0.12.3"
 base64 = "0.21.2"

@@ -828,6 +828,7 @@ dependencies = [
 [[package]]
 name = "dapi-grpc"
 version = "1.4.1"
+source = "git+https://github.com/dashpay/platform?branch=fix/address-list-error#cd392fca39d71ced2276bf5ff7c038cc3e492df9"
 dependencies = [
  "dapi-grpc-macros",
  "futures-core",
@@ -844,6 +845,7 @@ dependencies = [
 [[package]]
 name = "dapi-grpc-macros"
 version = "1.4.1"
+source = "git+https://github.com/dashpay/platform?branch=fix/address-list-error#cd392fca39d71ced2276bf5ff7c038cc3e492df9"
 dependencies = [
  "heck",
  "quote",
@@ -949,6 +951,7 @@ dependencies = [
 [[package]]
 name = "dashpay-contract"
 version = "1.4.1"
+source = "git+https://github.com/dashpay/platform?branch=fix/address-list-error#cd392fca39d71ced2276bf5ff7c038cc3e492df9"
 dependencies = [
  "platform-value",
  "platform-version",
@@ -959,6 +962,7 @@ dependencies = [
 [[package]]
 name = "data-contracts"
 version = "1.4.1"
+source = "git+https://github.com/dashpay/platform?branch=fix/address-list-error#cd392fca39d71ced2276bf5ff7c038cc3e492df9"
 dependencies = [
  "dashpay-contract",
  "dpns-contract",
@@ -1060,6 +1064,7 @@ dependencies = [
 [[package]]
 name = "dpns-contract"
 version = "1.4.1"
+source = "git+https://github.com/dashpay/platform?branch=fix/address-list-error#cd392fca39d71ced2276bf5ff7c038cc3e492df9"
 dependencies = [
  "platform-value",
  "platform-version",
@@ -1070,6 +1075,7 @@ dependencies = [
 [[package]]
 name = "dpp"
 version = "1.4.1"
+source = "git+https://github.com/dashpay/platform?branch=fix/address-list-error#cd392fca39d71ced2276bf5ff7c038cc3e492df9"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -1117,6 +1123,7 @@ dependencies = [
 [[package]]
 name = "drive"
 version = "1.4.1"
+source = "git+https://github.com/dashpay/platform?branch=fix/address-list-error#cd392fca39d71ced2276bf5ff7c038cc3e492df9"
 dependencies = [
  "arc-swap",
  "base64 0.22.1",
@@ -1347,6 +1354,7 @@ checksum = "e8c02a5121d4ea3eb16a80748c74f5549a5665e4c21333c6098f283870fbdea6"
 [[package]]
 name = "feature-flags-contract"
 version = "1.4.1"
+source = "git+https://github.com/dashpay/platform?branch=fix/address-list-error#cd392fca39d71ced2276bf5ff7c038cc3e492df9"
 dependencies = [
  "platform-value",
  "platform-version",
@@ -2109,6 +2117,7 @@ dependencies = [
 [[package]]
 name = "json-schema-compatibility-validator"
 version = "1.4.1"
+source = "git+https://github.com/dashpay/platform?branch=fix/address-list-error#cd392fca39d71ced2276bf5ff7c038cc3e492df9"
 dependencies = [
  "json-patch",
  "once_cell",
@@ -2259,6 +2268,7 @@ dependencies = [
 [[package]]
 name = "masternode-reward-shares-contract"
 version = "1.4.1"
+source = "git+https://github.com/dashpay/platform?branch=fix/address-list-error#cd392fca39d71ced2276bf5ff7c038cc3e492df9"
 dependencies = [
  "platform-value",
  "platform-version",
@@ -2713,6 +2723,7 @@ dependencies = [
 [[package]]
 name = "platform-serialization"
 version = "1.4.1"
+source = "git+https://github.com/dashpay/platform?branch=fix/address-list-error#cd392fca39d71ced2276bf5ff7c038cc3e492df9"
 dependencies = [
  "bincode",
  "platform-version",
@@ -2721,6 +2732,7 @@ dependencies = [
 [[package]]
 name = "platform-serialization-derive"
 version = "1.4.1"
+source = "git+https://github.com/dashpay/platform?branch=fix/address-list-error#cd392fca39d71ced2276bf5ff7c038cc3e492df9"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2731,6 +2743,7 @@ dependencies = [
 [[package]]
 name = "platform-value"
 version = "1.4.1"
+source = "git+https://github.com/dashpay/platform?branch=fix/address-list-error#cd392fca39d71ced2276bf5ff7c038cc3e492df9"
 dependencies = [
  "base64 0.22.1",
  "bincode",
@@ -2752,6 +2765,7 @@ dependencies = [
 [[package]]
 name = "platform-version"
 version = "1.4.1"
+source = "git+https://github.com/dashpay/platform?branch=fix/address-list-error#cd392fca39d71ced2276bf5ff7c038cc3e492df9"
 dependencies = [
  "bincode",
  "grovedb-version",
@@ -2763,6 +2777,7 @@ dependencies = [
 [[package]]
 name = "platform-versioning"
 version = "1.4.1"
+source = "git+https://github.com/dashpay/platform?branch=fix/address-list-error#cd392fca39d71ced2276bf5ff7c038cc3e492df9"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -3135,6 +3150,7 @@ dependencies = [
 [[package]]
 name = "rs-dapi-client"
 version = "1.4.1"
+source = "git+https://github.com/dashpay/platform?branch=fix/address-list-error#cd392fca39d71ced2276bf5ff7c038cc3e492df9"
 dependencies = [
  "backon",
  "chrono",
@@ -3516,6 +3532,7 @@ checksum = "e3a9fe34e3e7a50316060351f37187a3f546bce95496156754b601a5fa71b76e"
 [[package]]
 name = "simple-signer"
 version = "1.4.1"
+source = "git+https://github.com/dashpay/platform?branch=fix/address-list-error#cd392fca39d71ced2276bf5ff7c038cc3e492df9"
 dependencies = [
  "base64 0.22.1",
  "bincode",
@@ -4553,6 +4570,7 @@ dependencies = [
 [[package]]
 name = "withdrawals-contract"
 version = "1.4.1"
+source = "git+https://github.com/dashpay/platform?branch=fix/address-list-error#cd392fca39d71ced2276bf5ff7c038cc3e492df9"
 dependencies = [
  "num_enum 0.5.11",
  "platform-value",
