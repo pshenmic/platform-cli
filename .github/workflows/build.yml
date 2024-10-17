@@ -32,12 +32,11 @@ jobs:
           touch ~/.cargo/config.toml
           echo "
           [target.x86_64-unknown-linux-gnu]
-          linker = "aarch64-linux-gnu-gcc"
+          linker = "x86_64-linux-gnu-gcc"
           
           [target.aarch64-unknown-linux-gnu]
           linker = "aarch64-linux-gnu-gcc"
           " > ~/.cargo/config.toml
-          cat ~/.cargo/config.toml
       - name: Add Rust targets
         run: rustup target add x86_64-unknown-linux-gnu aarch64-unknown-linux-gnu
 
@@ -56,6 +55,18 @@ jobs:
 
       - name: Add Rust targets
         run: brew install llvm protobuf
+
+      - name: Create Cargo multiarch config
+        run: |
+          touch ~/.cargo/config.toml
+          echo "
+          [target.x86_64-apple-darwin]
+          linker = "aarch64-linux-gnu-gcc"
+          
+          [target.aarch64-apple-darwin]
+          linker = "aarch64-linux-gnu-gcc"
+          " > ~/.cargo/config.toml
+          cat ~/.cargo/config.toml
 
       - name: Add Rust targets
         run: rustup target add x86_64-apple-darwin aarch64-apple-darwin
