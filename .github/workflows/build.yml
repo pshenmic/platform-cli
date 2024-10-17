@@ -43,8 +43,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-#      - name: Add Rust targets
-#        run: brew install llvm protoc
+      - name: Add Rust targets
+        run: brew install llvm protoc
 
       - name: Add Rust targets
         run: rustup target add x86_64-apple-darwin aarch64-apple-darwin
