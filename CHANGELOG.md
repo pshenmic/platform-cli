@@ -1,6 +1,7 @@
 # CHANGELOG
 
 # v0.1.1
+Minor documentation updates and cleanup
 
 ## What's Changed
 * Updated application and README.md documentation by @pshenmic in https://github.com/pshenmic/platform-cli/pull/5
