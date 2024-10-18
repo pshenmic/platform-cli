@@ -10,7 +10,7 @@ Currently, there is a support of 3 given actions:
 
 * Credits Withdrawal
 * Register a name
-* Masternode vote for a contested resource
+* Masternode vote for a DPNS name
 
 Other actions will be implemented in future version (listed in order of priority):
 
@@ -21,7 +21,7 @@ Other actions will be implemented in future version (listed in order of priority
 * Create data contract
 * Masternode Vote Manual (for voting on any contested documents, no just DPNS one)
 
-The tool initially built to allow pshenmic.dev DFO make operations (JS Dash SDK is not feature-complete), but can be used by anyone to simply make transactions in the network without messing around with any UI interfaces.
+The tool initially built to allow pshenmic.dev DFO to make operations (JS Dash SDK is not feature-complete), but can be used by anyone to simply make transactions in the network without messing around with any UI interfaces.
 
 Any nice or missing features can be proposed by anyone via submitting an issue in the GitHub repository
 
@@ -30,7 +30,7 @@ https://github.com/pshenmic/platform-cli/issues
 
 ## Install
 
-1) Download a binary from the Releases section on the GitHub (matching your CPU architecture)
+1) Download a binary from the [Releases](https://github.com/pshenmic/platform-cli/releases) (matching your CPU architecture)
 2) Rename it to `platform-cli`
 3) Make it executable (`chmod +x platform-cli`)
 4) Add it to your `$PATH` environment variable, or simply put in the `/usr/local/bin`
