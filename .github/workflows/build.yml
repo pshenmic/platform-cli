@@ -7,61 +7,22 @@ on:
       - master
 
 jobs:
-  build_linux_x86_64:
-    name: Build Linux (x86_64)
-    runs-on: ubuntu-24.04
+  test:
+    name: Build
+    runs-on: ubuntu-22.04
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
-
-      - name: Install dependencies
-        run: sudo apt-get install -y build-essential pkg-config libssl-dev clang cmake llvm
 
       - name: Install protoc
         id: deps-protoc
         shell: bash
         run: |
           curl -Lo /tmp/protoc.zip \
-          "https://github.com/protocolbuffers/protobuf/releases/download/v28.2/protoc-28.2-linux-x86_64.zip"
+          "https://github.com/protocolbuffers/protobuf/releases/download/v28.2
           unzip -o /tmp/protoc.zip -d ${HOME}/.local
           echo "PROTOC=${HOME}/.local/bin/protoc" >> $GITHUB_ENV
           export PATH="${PATH}:${HOME}/.local/bin"
 
-      - name: Add Rust targets
-        run: rustup target add x86_64-unknown-linux-gnu
-
-      - name: Build for Linux x86
-        run: cargo build -r --target=x86_64-unknown-linux-gnu --verbose && mv target/x86_64-unknown-linux-gnu/release/platform-cli ./platform-cli-gnu-x86_64
-
-  build_mac_x86_64:
-    name: Build Apple (x86_64)
-    runs-on: macos-13
-    timeout-minutes: 30
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Add Rust targets
-        run: brew install llvm protobuf
-
-      - name: Add Rust targets
-        run: rustup target add x86_64-apple-darwin
-
-      - name: Build for Apple x86
-        run: cargo build -r --target=x86_64-apple-darwin --verbose && mv target/x86_64-apple-darwin/release/platform-cli ./platform-cli_darwin-x86_64
-
-  build_mac_arm64:
-    name: Build Apple (arm64)
-    runs-on: macos-15
-    timeout-minutes: 30
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Add Rust targets
-        run: brew install llvm protobuf
-
-      - name: Add Rust targets
-        run: rustup target add aarch64-apple-darwin
-
-      - name: Build for Apple Silicon
-        run: cargo build -r --target=aarch64-apple-darwin --verbose && mv target/aarch64-apple-darwin/release/platform-cli ./platform-cli_darwin-arm64
-
+      - name: Build
+        run: cargo build --verbose
