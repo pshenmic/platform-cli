@@ -19,26 +19,27 @@ use crate::errors::identity_public_key_hash_mismatch_error::IdentityPublicKeyHas
 use crate::factories::Factories;
 use crate::grpc::PlatformGRPCClient;
 
-/// Perform a masternode vote on contested resource
+/// Perform a masternode vote towards contested DPNS name
 #[derive(Parser)]
 pub struct MasternodeVoteDPNSNameCommand {
-    /// Identity private key in hex
-    #[clap(long, default_value(""))]
-    pro_tx_hash: String,
-
-    /// Identity private key in hex
-    #[clap(long, default_value(""))]
-    normalized_label: String,
-
-    /// Identity private key in hex
-    #[clap(long, default_value(""))]
-    private_key: String,
-
-    /// Identity private key in hex
+    /// DAPI GRPC Endpoint URL, ex. https://127.0.0.1:1443
     #[clap(long, default_value(""))]
     dapi_url: String,
 
-    /// Identity private key in hex
+    /// ProTxHash of the Masternode performing a Vote, in hex
+    #[clap(long, default_value(""))]
+    pro_tx_hash: String,
+
+    /// Voting (or Owner) private key in WIF format
+    #[clap(long, default_value(""))]
+    private_key: String,
+
+    /// Normalized label to vote upon (can be grabbed from https//dash.vote)
+    #[clap(long, default_value(""))]
+    normalized_label: String,
+
+    /// The choice of the Vote.
+    /// It can be an Identifier you are voting towards (ex. BMJWm8wKmbApR7nQ6q7RG3HgD8maJ8t7B4yWBKRe7aZ6), or Lock, or Abstain
     #[clap(long, default_value(""))]
     choice: String,
 }
