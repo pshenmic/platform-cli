@@ -7,6 +7,7 @@ use dpp::identifier::{Identifier, MasternodeIdentifiers};
 use dpp::identity::accessors::IdentityGettersV0;
 use dpp::identity::hash::IdentityPublicKeyHashMethodsV0;
 use dpp::identity::{IdentityPublicKey};
+use dpp::native_bls::NativeBlsModule;
 use dpp::platform_value::string_encoding::Encoding::{Base58};
 use dpp::platform_value::Value;
 use dpp::serialization::PlatformSerializable;
@@ -63,7 +64,6 @@ impl MasternodeVoteDPNSNameCommand {
         }
 
         let secp = Secp256k1::new();
-        let bls = dpp::native_bls::NativeBlsModule {};
 
         let private_key_data = fs::read_to_string(&self.private_key).expect("Unable to read file");
         let private_key = PrivateKey::from_wif(&private_key_data).expect("Could not load private key from WIF");
@@ -112,7 +112,7 @@ impl MasternodeVoteDPNSNameCommand {
 
         let mut masternode_vote_state_transition = StateTransition::from(masternode_vote_transition);
 
-        masternode_vote_state_transition.sign(&identity_public_key, private_key.to_bytes().as_slice(), &bls).unwrap();
+        masternode_vote_state_transition.sign(&identity_public_key, private_key.to_bytes().as_slice(), &NativeBlsModule).unwrap();
 
         let preorder_buffer = masternode_vote_state_transition.clone().serialize_to_bytes().unwrap();
 
