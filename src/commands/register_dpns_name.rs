@@ -37,24 +37,24 @@ use crate::grpc::PlatformGRPCClient;
 use crate::utils::MyDefaultEntropyGenerator;
 use regex::Regex;
 
-/// Register DPNS name
+/// Register an Identity Name in the Dash Platform DPNS system.
 #[derive(Parser)]
 pub struct RegisterDPNSNameCommand {
-    /// Identity private key in hex
+    /// DAPI GRPC Endpoint URL, ex. https://127.0.0.1:1443
     #[clap(long, default_value(""))]
-    private_key: String,
+    dapi_url: String,
 
-    /// Identity private key in hex
+    /// Identity address that registers a name
     #[clap(long, default_value(""))]
     identity: String,
+
+    /// Identity private key in WIF format
+    #[clap(long, default_value(""))]
+    private_key: String,
 
     /// Name to register (excluding .dash)
     #[clap(long, default_value(""))]
     name: String,
-
-    /// Identity private key in hex
-    #[clap(long, default_value(""))]
-    dapi_url: String,
 }
 
 impl RegisterDPNSNameCommand {

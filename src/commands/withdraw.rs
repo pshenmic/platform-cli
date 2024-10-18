@@ -21,10 +21,13 @@ use crate::errors::identity_public_key_hash_mismatch_error::IdentityPublicKeyHas
 use crate::errors::Error;
 use crate::grpc::PlatformGRPCClient;
 
-/// Withdraw credits to core chain
+/// Withdraw credits from the Identity to the L1 Core chain
 #[derive(Parser)]
 pub struct WithdrawCommand {
-    /// Identity address that initiate withdrawal
+    /// DAPI GRPC Endpoint URL, ex. https://127.0.0.1:1443
+    #[clap(long, default_value(""))]
+    dapi_url: String,
+    /// Identity address, that initiate withdrawal
     #[clap(long, default_value(""))]
     identity: String,
     /// Identity private key in WIF format
@@ -36,9 +39,6 @@ pub struct WithdrawCommand {
     /// Amount of credits to withdraw
     #[clap(long, default_value(""))]
     amount: String,
-    /// DAPI GRPC Endpoint URL, ex. https://127.0.0.1:1443
-    #[clap(long, default_value(""))]
-    dapi_url: String,
 }
 
 impl WithdrawCommand {
