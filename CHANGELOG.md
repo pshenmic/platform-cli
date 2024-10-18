@@ -1,6 +1,13 @@
 # CHANGELOG
 
-# 0.1.0
+# v0.1.1
+
+## What's Changed
+* Updated application and README.md documentation by @pshenmic in https://github.com/pshenmic/platform-cli/pull/5
+
+**Full Changelog**: https://github.com/pshenmic/platform-cli/compare/v0.1.0...v0.1.1
+
+# v0.1.0
 
 First release, a basic CLI application structure (3 commands implemented) and cross-compile multi arch CI release builds.
 
