@@ -45,9 +45,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Print arch
-        run: uname -a
-
       - name: Install dependencies
         run: sudo apt-get install -y build-essential pkg-config libssl-dev clang cmake llvm g++-aarch64-linux-gnu gcc-aarch64-linux-gnu libc6-dev-i386 g++-13-multilib gcc-13-multilib && dpkg -l
 
