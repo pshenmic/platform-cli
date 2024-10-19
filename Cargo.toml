@@ -4,8 +4,7 @@ version = "0.1.1"
 edition = "2021"
 
 [dependencies]
-drive = { git = "https://github.com/dashpay/platform", branch = "fix/address-list-error"}
-dpp = { git = "https://github.com/dashpay/platform", branch = "fix/address-list-error" , features = ["state-transition-signing"]}
+dpp = { git = "https://github.com/dashpay/platform", branch = "fix/address-list-error" , features = ["state-transition-signing", "data-contract-value-conversion"]}
 rs-dapi-client = { git = "https://github.com/dashpay/platform", branch = "fix/address-list-error" }
 dapi-grpc = { git = "https://github.com/dashpay/platform", branch = "fix/address-list-error" }
 simple-signer = { git = "https://github.com/dashpay/platform", branch = "fix/address-list-error" }
