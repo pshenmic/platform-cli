@@ -27,15 +27,19 @@ pub struct WithdrawCommand {
     /// DAPI GRPC Endpoint URL, ex. https://127.0.0.1:1443
     #[clap(long, default_value(""))]
     dapi_url: String,
+
     /// Identity address, that initiate withdrawal
     #[clap(long, default_value(""))]
     identity: String,
-    /// Identity private key in WIF format
+
+    /// Path to file with private key from Identity in WIF format
     #[clap(long, default_value(""))]
     private_key: String,
+
     /// Core withdrawal address (P2PKH / P2SH)
     #[clap(long, default_value(""))]
     withdrawal_address: String,
+
     /// Amount of credits to withdraw
     #[clap(long, default_value(""))]
     amount: String,
@@ -65,8 +69,9 @@ impl WithdrawCommand {
 
         let secp = Secp256k1::new();
 
-        let private_key_data = fs::read_to_string(&self.private_key).expect("Unable to read file");
-        let private_key = PrivateKey::from_wif(&private_key_data).expect("Could not load private key from WIF");
+        let private_key_data = fs::read_to_string(&self.private_key.trim()).expect("Unable to read file");
+        let (private_key_data_stripped, _) = private_key_data.split_at(52);
+        let private_key = PrivateKey::from_wif(&private_key_data_stripped).expect("Could not load private key from WIF");
         let public_key = private_key.public_key(&secp);
 
         let platform_grpc_client = PlatformGRPCClient::new(&self.dapi_url);
