@@ -30,7 +30,7 @@ pub struct MasternodeVoteDPNSNameCommand {
     #[clap(long, default_value(""))]
     pro_tx_hash: String,
 
-    /// Voting (or Owner) private key in WIF format
+    /// Path to file with voting (or owner) private key in WIF format
     #[clap(long, default_value(""))]
     private_key: String,
 
@@ -67,7 +67,8 @@ impl MasternodeVoteDPNSNameCommand {
         let secp = Secp256k1::new();
 
         let private_key_data = fs::read_to_string(&self.private_key).expect("Unable to read file");
-        let private_key = PrivateKey::from_wif(&private_key_data).expect("Could not load private key from WIF");
+        let (private_key_data_stripped, _) = private_key_data.split_at(52);
+        let private_key = PrivateKey::from_wif(&private_key_data_stripped).expect("Could not load private key from WIF");
         let public_key = private_key.public_key(&secp);
         let pro_tx_hash = ProTxHash::from_hex(&self.pro_tx_hash).expect("Could not decode pro tx hash");
         let voting_address = public_key.pubkey_hash().to_byte_array();

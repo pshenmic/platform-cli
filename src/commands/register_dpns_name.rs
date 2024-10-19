@@ -48,7 +48,7 @@ pub struct RegisterDPNSNameCommand {
     #[clap(long, default_value(""))]
     identity: String,
 
-    /// Identity private key in WIF format
+    /// Path to file with private key from Identity in WIF format
     #[clap(long, default_value(""))]
     private_key: String,
 
@@ -78,7 +78,8 @@ impl RegisterDPNSNameCommand {
         let secp = Secp256k1::new();
 
         let private_key_data = fs::read_to_string(&self.private_key).expect("Unable to read file");
-        let private_key = PrivateKey::from_wif(&private_key_data).expect("Could not load private key from WIF");
+        let (private_key_data_stripped, _) = private_key_data.split_at(52);
+        let private_key = PrivateKey::from_wif(&private_key_data_stripped).expect("Could not load private key from WIF");
         let public_key = private_key.public_key(&secp);
         let identifier = Identifier::from_string(&self.identity, Base58).unwrap();
 
