@@ -8,7 +8,6 @@ use dpp::identity::accessors::IdentityGettersV0;
 use dpp::identity::core_script::CoreScript;
 use dpp::identity::hash::IdentityPublicKeyHashMethodsV0;
 use dpp::identity::IdentityPublicKey;
-use dpp::native_bls::NativeBlsModule;
 use dpp::platform_value::string_encoding::Encoding::{Base58};
 use dpp::serialization::{PlatformSerializable};
 use dpp::state_transition::identity_credit_withdrawal_transition::v1::IdentityCreditWithdrawalTransitionV1;
@@ -20,6 +19,7 @@ use crate::errors::cli_argument_missing_error::CommandLineArgumentMissingError;
 use crate::errors::identity_public_key_hash_mismatch_error::IdentityPublicKeyHashMismatchError;
 use crate::errors::Error;
 use crate::grpc::PlatformGRPCClient;
+use crate::MockBLS;
 
 /// Withdraw credits from the Identity to the L1 Core chain
 #[derive(Parser)]
@@ -106,7 +106,7 @@ impl WithdrawCommand {
 
         let mut state_transition = StateTransition::from(identity_credit_withdrawal_transition);
 
-        state_transition.sign(&identity_public_key, private_key.to_bytes().as_slice(), &NativeBlsModule).unwrap();
+        state_transition.sign(&identity_public_key, private_key.to_bytes().as_slice(), &MockBLS{}).unwrap();
 
         let buffer = state_transition.serialize_to_bytes().unwrap();
         let tx_hash = digest(buffer.clone());

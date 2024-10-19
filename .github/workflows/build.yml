@@ -25,4 +25,4 @@ jobs:
           export PATH="${PATH}:${HOME}/.local/bin"
 
       - name: Build
-        run: cargo build --verbose
+        run: cargo build -r
