@@ -13,7 +13,6 @@ use dpp::identifier::Identifier;
 use dpp::identity::accessors::IdentityGettersV0;
 use dpp::identity::hash::IdentityPublicKeyHashMethodsV0;
 use dpp::identity::IdentityPublicKey;
-use dpp::native_bls::NativeBlsModule;
 use dpp::platform_value::string_encoding::Encoding::Base58;
 use dpp::platform_value::{platform_value, Value};
 use dpp::serialization::PlatformSerializable;
@@ -36,6 +35,7 @@ use crate::factories::Factories;
 use crate::grpc::PlatformGRPCClient;
 use crate::utils::MyDefaultEntropyGenerator;
 use regex::Regex;
+use crate::MockBLS;
 
 /// Register an Identity Name in the Dash Platform DPNS system.
 #[derive(Parser)]
@@ -133,7 +133,7 @@ impl RegisterDPNSNameCommand {
             transitions: vec![pre_order_transition]
         });
 
-        preorder_state_transition.sign(identity_public_key, private_key.to_bytes().as_slice(), &NativeBlsModule).unwrap();
+        preorder_state_transition.sign(identity_public_key, private_key.to_bytes().as_slice(), &MockBLS{}).unwrap();
 
         let preorder_buffer = preorder_state_transition.clone().serialize_to_bytes().unwrap();
 
@@ -179,7 +179,7 @@ impl RegisterDPNSNameCommand {
             transitions: vec![domain_document_transition]
         });
 
-        domain_state_transition.sign(identity_public_key, private_key.to_bytes().as_slice(), &NativeBlsModule).unwrap();
+        domain_state_transition.sign(identity_public_key, private_key.to_bytes().as_slice(), &MockBLS{}).unwrap();
 
         let domain_buffer = domain_state_transition.clone().serialize_to_bytes().unwrap();
 

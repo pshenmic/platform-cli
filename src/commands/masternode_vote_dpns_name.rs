@@ -7,7 +7,6 @@ use dpp::identifier::{Identifier, MasternodeIdentifiers};
 use dpp::identity::accessors::IdentityGettersV0;
 use dpp::identity::hash::IdentityPublicKeyHashMethodsV0;
 use dpp::identity::{IdentityPublicKey};
-use dpp::native_bls::NativeBlsModule;
 use dpp::platform_value::string_encoding::Encoding::{Base58};
 use dpp::platform_value::Value;
 use dpp::serialization::PlatformSerializable;
@@ -18,6 +17,7 @@ use crate::errors::Error;
 use crate::errors::identity_public_key_hash_mismatch_error::IdentityPublicKeyHashMismatchError;
 use crate::factories::Factories;
 use crate::grpc::PlatformGRPCClient;
+use crate::MockBLS;
 
 /// Perform a masternode vote towards contested DPNS name
 #[derive(Parser)]
@@ -113,7 +113,7 @@ impl MasternodeVoteDPNSNameCommand {
 
         let mut masternode_vote_state_transition = StateTransition::from(masternode_vote_transition);
 
-        masternode_vote_state_transition.sign(&identity_public_key, private_key.to_bytes().as_slice(), &NativeBlsModule).unwrap();
+        masternode_vote_state_transition.sign(&identity_public_key, private_key.to_bytes().as_slice(), &MockBLS{}).unwrap();
 
         let preorder_buffer = masternode_vote_state_transition.clone().serialize_to_bytes().unwrap();
 
