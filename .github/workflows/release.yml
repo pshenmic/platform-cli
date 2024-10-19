@@ -9,7 +9,7 @@ on:
 jobs:
   build_linux_x86_64:
     name: Build Linux (x86_64)
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-20.04
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
@@ -40,13 +40,13 @@ jobs:
 
   build_linux_arm64:
     name: Build Linux (arm64)
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-20.04
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
 
       - name: Install dependencies
-        run: sudo apt-get install -y build-essential pkg-config libssl-dev clang cmake llvm g++-aarch64-linux-gnu gcc-aarch64-linux-gnu libc6-dev-i386 g++-13-multilib gcc-13-multilib && dpkg -l
+        run: sudo apt-get install -y build-essential pkg-config libssl-dev clang cmake llvm gcc-aarch64-linux-gnu
 
       - name: Install protoc
         id: deps-protoc
