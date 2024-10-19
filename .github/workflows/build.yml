@@ -7,18 +7,12 @@ on:
       - master
 
 jobs:
-  build_linux_arm64:
-    name: Build Linux
-    runs-on: ubuntu-24.04
+  test:
+    name: Build
+    runs-on: ubuntu-22.04
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
-
-      - name: Print arch
-        run: uname -a
-
-      - name: Install dependencies
-        run: sudo apt-get install -y build-essential pkg-config libssl-dev clang cmake llvm g++-aarch64-linux-gnu gcc-aarch64-linux-gnu libc6-dev-i386 g++-13-multilib gcc-13-multilib && dpkg -l
 
       - name: Install protoc
         id: deps-protoc
@@ -30,16 +24,5 @@ jobs:
           echo "PROTOC=${HOME}/.local/bin/protoc" >> $GITHUB_ENV
           export PATH="${PATH}:${HOME}/.local/bin"
 
-      - name: Add Rust targets
-        run: rustup target add aarch64-unknown-linux-gnu
-
-      - name: Create Cargo multiarch config
-        run: |
-          touch ~/.cargo/config.toml
-          echo "
-          [target.aarch64-unknown-linux-gnu]
-          linker = \"aarch64-linux-gnu-gcc\"
-          " > ~/.cargo/config.toml
-
-      - name: Build for Linux arm64
-        run: cargo build -r --target=aarch64-unknown-linux-gnu && mv target/unknown-linux-gnu/release/platform-cli ./platform-cli-gnu-arm64
+      - name: Build
+        run: cargo build --verbose
