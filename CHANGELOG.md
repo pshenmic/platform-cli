@@ -1,5 +1,15 @@
 # CHANGELOG
 
+# v0.1.3
+Fix GLIBC issue for older systems (now being build under Ubuntu 20.04), and fix for whitespaces or newlines in the input file data
+
+## What's Changed
+* Downgrade Linux GLIBC requirement by @pshenmic in https://github.com/pshenmic/platform-cli/pull/6
+* Strip input file whitespaces and newlines by @pshenmic in https://github.com/pshenmic/platform-cli/pull/7
+
+
+**Full Changelog**: https://github.com/pshenmic/platform-cli/compare/v0.1.2...v0.1.3
+
 # v0.1.2
 Linux ARM64 builds support
 
