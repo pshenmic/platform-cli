@@ -1,5 +1,14 @@
 # CHANGELOG
 
+# v0.1.2
+Linux ARM64 builds support
+
+## What's Changed
+* Added Linux arm64 builds on CI by @pshenmic in https://github.com/pshenmic/platform-cli/pull/4
+* Removed rs-drive from the project dependencies
+
+**Full Changelog**: https://github.com/pshenmic/platform-cli/compare/v0.1.1...v0.1.2
+
 # v0.1.1
 Minor documentation updates and cleanup
 
