@@ -1,4 +1,5 @@
 use std::fmt::{Display, Formatter};
+use crate::errors::cli_argument_invalid_input::CommandLineArgumentInvalidInput;
 use crate::errors::cli_argument_missing_error::CommandLineArgumentMissingError;
 use crate::errors::dapi_response_error::DapiResponseError;
 use crate::errors::identity_not_found_error::{IdentityNotFoundError};
@@ -8,10 +9,12 @@ pub mod cli_argument_missing_error;
 pub mod identity_not_found_error;
 pub mod dapi_response_error;
 pub mod identity_public_key_hash_mismatch_error;
+pub mod cli_argument_invalid_input;
 
 
 pub enum Error {
     CommandLineArgumentMissingError(CommandLineArgumentMissingError),
+    CommandLineArgumentInvalidInput(CommandLineArgumentInvalidInput),
     IdentityNotFoundError(IdentityNotFoundError),
     IdentityPublicKeyHashMismatchError(IdentityPublicKeyHashMismatchError),
     DapiResponseError(DapiResponseError),
@@ -24,21 +27,15 @@ impl Display for Error {
                 write!(f, "{}", err)
             }
             Error::IdentityNotFoundError(err) => {
-                // match err{
-                //     IdentifierOrPublicKey::Identifier(identifier) => {
-                //         write!(f, "Identity with identifier {} not found.", identifier.to_string(Base58))
-                //     }
-                //     IdentifierOrPublicKey::PublicKey(pkh) => {
-                //         write!(f, "Identity by public key hash {} not found.", pkh)
-                //     }
-                // }
-                //
                 write!(f, "{}", err)
             }
             Error::DapiResponseError(err) => {
                 write!(f, "{}", err)
             }
             Error::IdentityPublicKeyHashMismatchError(err) => {
+                write!(f, "{}", err)
+            }
+            Error::CommandLineArgumentInvalidInput(err) => {
                 write!(f, "{}", err)
             }
         }
