@@ -158,6 +158,7 @@ impl WithdrawCommand {
         platform_grpc_client.broadcast_state_transition(state_transition).await;
 
         info!("Successfully sent IdentityCreditWithdrawal transaction for {} CREDITS from Identity {}", self.amount, identity.id().to_string(Base58));
+        info!("Please check your transaction on the Platform Explorer to make sure it finished successfully");
 
         Ok(())
     }

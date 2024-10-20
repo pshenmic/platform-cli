@@ -13,6 +13,8 @@ use dpp::platform_value::Value;
 use dpp::serialization::PlatformSerializable;
 use dpp::state_transition::StateTransition;
 use dpp::voting::vote_choices::resource_vote_choice::ResourceVoteChoice;
+use log::{debug, info};
+use sha256::digest;
 use crate::errors::cli_argument_missing_error::CommandLineArgumentMissingError;
 use crate::errors::Error;
 use crate::errors::identity_public_key_hash_mismatch_error::IdentityPublicKeyHashMismatchError;
@@ -76,6 +78,7 @@ impl MasternodeVoteDPNSNameCommand {
         if self.choice.is_empty() {
             return Err(Error::CommandLineArgumentMissingError(CommandLineArgumentMissingError::from("choice")));
         }
+        info!("Starting Masternode Vote on {} DPNS name process with choice {} ({})", &self.network, &self.normalized_label, &self.choice);
 
         let secp = Secp256k1::new();
 
@@ -94,8 +97,12 @@ impl MasternodeVoteDPNSNameCommand {
 
         let identity = platform_grpc_client.get_identity_by_identifier(voter_identity_id).await?;
 
+        debug!("Identity with identifier {} found in the network", identity.id());
+
         let identity_public_keys = platform_grpc_client
             .get_identity_keys(identity.id()).await;
+
+        debug!("Finding matching IdentityPublicKey in the Identity against applied private key");
 
         let identity_public_key = identity_public_keys
             .iter()
@@ -105,6 +112,12 @@ impl MasternodeVoteDPNSNameCommand {
             .ok_or(Error::IdentityPublicKeyHashMismatchError(IdentityPublicKeyHashMismatchError::from((identity.id(), public_key.pubkey_hash()))))?
             .clone();
 
+        debug!("Found matching IdentityPublicKey id: {}, key_type: {}, pubkeyhash: {}, purpose: {}, security_level: {}",
+            identity_public_key.id(),
+            identity_public_key.key_type(),
+            identity_public_key.public_key_hash().unwrap().to_lower_hex_string(),
+            identity_public_key.purpose(),
+            identity_public_key.security_level());
 
         let choice = match self.choice.as_str() {
             "Lock" => ResourceVoteChoice::Lock,
@@ -127,13 +140,24 @@ impl MasternodeVoteDPNSNameCommand {
 
         let mut masternode_vote_state_transition = StateTransition::from(masternode_vote_transition);
 
+        debug!("Signing IdentityCreditWithdrawal with IdentityPublicKey id: {}, key_type: {}, pubkeyhash: {}, purpose: {}, security_level: {}",
+            identity_public_key.id(),
+            identity_public_key.key_type(),
+            identity_public_key.public_key_hash().unwrap().to_lower_hex_string(),
+            identity_public_key.purpose(),
+            identity_public_key.security_level());
+
         masternode_vote_state_transition.sign(&identity_public_key, private_key.to_bytes().as_slice(), &MockBLS{}).unwrap();
 
-        let preorder_buffer = masternode_vote_state_transition.clone().serialize_to_bytes().unwrap();
-
+        let masternode_vote_buffer = masternode_vote_state_transition.clone().serialize_to_bytes().unwrap();
+        let masternode_vote_hex = masternode_vote_buffer.clone();
+        let masternode_vote_hash = digest(masternode_vote_buffer.clone());
+        debug!("Signed MasternodeVote Transaction Hex: {}", masternode_vote_hex.to_lower_hex_string());
+        info!("MasternodeVote Transaction Hash: {}", masternode_vote_hash);
         platform_grpc_client.broadcast_state_transition(masternode_vote_state_transition).await;
 
-        println!("Masrternode vote transaction: {}", hex::encode(preorder_buffer));
+        println!("Masternode Vote for {} DPNS name has been sucessfully submitted", &self.normalized_label);
+        info!("Please check your transaction on the Platform Explorer to make sure it finished successfully");
 
         Ok(())
     }
