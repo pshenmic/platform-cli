@@ -147,7 +147,7 @@ impl MasternodeVoteDPNSNameCommand {
 
         let mut masternode_vote_state_transition = StateTransition::from(masternode_vote_transition);
 
-        debug!("Signing IdentityCreditWithdrawal with IdentityPublicKey id: {}, key_type: {}, pubkeyhash: {}, purpose: {}, security_level: {}",
+        debug!("Signing MasternodeVote with IdentityPublicKey id: {}, key_type: {}, pubkeyhash: {}, purpose: {}, security_level: {}",
             identity_public_key.id(),
             identity_public_key.key_type(),
             identity_public_key.public_key_hash().unwrap().to_lower_hex_string(),

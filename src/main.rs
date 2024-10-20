@@ -46,7 +46,7 @@ struct Args {
 enum MyCommand {
     Withdraw(WithdrawCommand),
     RegisterDPNSName(RegisterDPNSNameCommand),
-    MasternodeVoteDPNSName(MasternodeVoteDPNSNameCommand),
+    MasternodeVoteDPNSName(MasternodeVoteDPNSNameCommand)
 }
 
 static LOGGER: Logger = Logger;
