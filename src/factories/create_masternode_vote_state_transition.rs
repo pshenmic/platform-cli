@@ -3,6 +3,7 @@ use base64::engine::general_purpose;
 use dpp::identifier::Identifier;
 use dpp::platform_value::{Value};
 use dpp::platform_value::string_encoding::Encoding::Base64;
+use dpp::prelude::IdentityNonce;
 use dpp::state_transition::masternode_vote_transition::MasternodeVoteTransition;
 use dpp::state_transition::masternode_vote_transition::v0::MasternodeVoteTransitionV0;
 use dpp::voting::vote_choices::resource_vote_choice::ResourceVoteChoice;
@@ -16,6 +17,7 @@ use crate::factories::Factories;
 impl Factories {
     pub fn create_masternode_vote_state_transition(pro_tx_hash: &str,
                                                    voter_identity_id: Identifier,
+                                                   nonce: IdentityNonce,
                                                    data_contract_id: Identifier,
                                                    document_type_name: &str,
                                                    index_name: &str,
@@ -39,7 +41,7 @@ impl Factories {
             pro_tx_hash: validator_identifier,
             voter_identity_id,
             vote,
-            nonce: 0,
+            nonce,
             signature_public_key_id: 0,
             signature: Default::default(),
         };

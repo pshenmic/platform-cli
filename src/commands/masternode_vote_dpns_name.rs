@@ -80,7 +80,7 @@ impl MasternodeVoteDPNSNameCommand {
         if self.choice.is_empty() {
             return Err(Error::CommandLineArgumentMissingError(CommandLineArgumentMissingError::from("choice")));
         }
-        info!("Starting Masternode Vote on {} DPNS name process with choice {} ({})", &self.network, &self.normalized_label, &self.choice);
+        info!("Starting Masternode Vote on {}.dash DPNS name process with choice {} ({})", &self.normalized_label, &self.choice, &self.network);
 
         let secp = Secp256k1::new();
 
@@ -121,6 +121,10 @@ impl MasternodeVoteDPNSNameCommand {
             identity_public_key.purpose(),
             identity_public_key.security_level());
 
+        let nonce = platform_grpc_client.get_identity_nonce(identity.id()).await;
+
+        debug!("Identity nonce for identifier {} is {}", identity.id(), nonce.clone());
+
         let choice = match self.choice.as_str() {
             "Lock" => ResourceVoteChoice::Lock,
             "Abstain" => ResourceVoteChoice::Abstain,
@@ -130,6 +134,7 @@ impl MasternodeVoteDPNSNameCommand {
         let masternode_vote_transition = Factories::create_masternode_vote_state_transition(
             &pro_tx_hash.to_hex(),
             voter_identity_id,
+            nonce,
             Identifier::from_string(DPNS_DATA_CONTRACT_IDENTIFIER, Base58).unwrap(),
             "domain",
             "parentNameAndLabel",
@@ -158,7 +163,7 @@ impl MasternodeVoteDPNSNameCommand {
         info!("MasternodeVote Transaction Hash: {}", masternode_vote_hash);
         platform_grpc_client.broadcast_state_transition(masternode_vote_state_transition).await;
 
-        println!("Masternode Vote for {} DPNS name has been sucessfully submitted", &self.normalized_label);
+        println!("Masternode Vote for {}.dash DPNS name has been sucessfully submitted", &self.normalized_label);
         info!("Please check your transaction on the Platform Explorer to make sure it finished successfully");
 
         Ok(())
