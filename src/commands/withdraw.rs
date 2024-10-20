@@ -1,6 +1,7 @@
 use std::fs;
+use std::str::FromStr;
 use clap::Parser;
-use dpp::dashcore::{PrivateKey};
+use dpp::dashcore::{Network};
 use dpp::dashcore::hashes::Hash;
 use dpp::dashcore::secp256k1::Secp256k1;
 use dpp::identifier::Identifier;
@@ -20,10 +21,15 @@ use crate::errors::identity_public_key_hash_mismatch_error::IdentityPublicKeyHas
 use crate::errors::Error;
 use crate::grpc::PlatformGRPCClient;
 use crate::MockBLS;
+use crate::utils::Utils;
 
 /// Withdraw credits from the Identity to the L1 Core chain
 #[derive(Parser)]
 pub struct WithdrawCommand {
+    /// Network, mainnet or testnet
+    #[clap(long, default_value(""))]
+    network: String,
+
     /// DAPI GRPC Endpoint URL, ex. https://127.0.0.1:1443
     #[clap(long, default_value(""))]
     dapi_url: String,
@@ -47,6 +53,10 @@ pub struct WithdrawCommand {
 
 impl WithdrawCommand {
     pub async fn run(&self) -> Result<(), Error> {
+        if self.network.is_empty() {
+            return Err(Error::CommandLineArgumentMissingError(CommandLineArgumentMissingError::from("network")));
+        }
+
         if self.dapi_url.is_empty() {
             return Err(Error::CommandLineArgumentMissingError(CommandLineArgumentMissingError::from("dapi_url")));
         }
@@ -69,9 +79,9 @@ impl WithdrawCommand {
 
         let secp = Secp256k1::new();
 
-        let private_key_data = fs::read_to_string(&self.private_key.trim()).expect("Unable to read file");
-        let (private_key_data_stripped, _) = private_key_data.split_at(52);
-        let private_key = PrivateKey::from_wif(&private_key_data_stripped).expect("Could not load private key from WIF");
+        let network_type = Network::from_str(&self.network).expect("Could not parse network");
+        let private_key_data = fs::read_to_string(&self.private_key).expect("Unable to read private key file");
+        let private_key = Utils::decode_private_key_from_input_string(private_key_data.as_str(), network_type)?;
         let public_key = private_key.public_key(&secp);
 
         let platform_grpc_client = PlatformGRPCClient::new(&self.dapi_url);

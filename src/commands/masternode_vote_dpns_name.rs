@@ -1,8 +1,9 @@
 use std::fs;
+use std::str::FromStr;
 use clap::Parser;
 use dpp::dashcore::hashes::Hash;
 use dpp::dashcore::key::Secp256k1;
-use dpp::dashcore::{PrivateKey, ProTxHash};
+use dpp::dashcore::{Network, ProTxHash};
 use dpp::identifier::{Identifier, MasternodeIdentifiers};
 use dpp::identity::accessors::IdentityGettersV0;
 use dpp::identity::hash::IdentityPublicKeyHashMethodsV0;
@@ -18,10 +19,15 @@ use crate::errors::identity_public_key_hash_mismatch_error::IdentityPublicKeyHas
 use crate::factories::Factories;
 use crate::grpc::PlatformGRPCClient;
 use crate::MockBLS;
+use crate::utils::Utils;
 
 /// Perform a masternode vote towards contested DPNS name
 #[derive(Parser)]
 pub struct MasternodeVoteDPNSNameCommand {
+    /// Network, mainnet or testnet
+    #[clap(long, default_value(""))]
+    network: String,
+
     /// DAPI GRPC Endpoint URL, ex. https://127.0.0.1:1443
     #[clap(long, default_value(""))]
     dapi_url: String,
@@ -48,6 +54,9 @@ const DPNS_DATA_CONTRACT_IDENTIFIER: &str = "GWRSAVFMjXx8HpQFaNJMqBV7MBgMK4br5UE
 
 impl MasternodeVoteDPNSNameCommand {
     pub async fn run(&self) -> Result<(), Error> {
+        if self.network.is_empty() {
+            return Err(Error::CommandLineArgumentMissingError(CommandLineArgumentMissingError::from("network")));
+        }
         if self.pro_tx_hash.is_empty() {
             return Err(Error::CommandLineArgumentMissingError(CommandLineArgumentMissingError::from("pro_tx_hash")));
         }
@@ -66,9 +75,9 @@ impl MasternodeVoteDPNSNameCommand {
 
         let secp = Secp256k1::new();
 
-        let private_key_data = fs::read_to_string(&self.private_key).expect("Unable to read file");
-        let (private_key_data_stripped, _) = private_key_data.split_at(52);
-        let private_key = PrivateKey::from_wif(&private_key_data_stripped).expect("Could not load private key from WIF");
+        let network_type = Network::from_str(&self.network).expect("Could not parse network");
+        let private_key_data = fs::read_to_string(&self.private_key).expect("Unable to read private key file");
+        let private_key = Utils::decode_private_key_from_input_string(private_key_data.as_str(), network_type)?;
         let public_key = private_key.public_key(&secp);
         let pro_tx_hash = ProTxHash::from_hex(&self.pro_tx_hash).expect("Could not decode pro tx hash");
         let voting_address = public_key.pubkey_hash().to_byte_array();

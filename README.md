@@ -42,9 +42,9 @@ You can use --help to get more info about command flags
 
 Example commands:
 ```bash
-$ platform-cli withdraw --dapi-url https://127.0.0.1:1443 --identity A1rgGVjRGuznRThdAA316VEEpKuVQ7mV8mBK1BFJvXnb --private-key private_key.txt --withdrawal-address yifJkXaxe7oM1NgBDTaXnWa6kXZAazBfjk --amount 40000
-$ platform-cli register-dpns-name --identity 8eTDkBhpQjHeqgbVeriwLeZr1tCa6yBGw76SckvD1cwc --private-key private_key.txt --dapi-url https://52.43.13.92:1443 --name tesstst32423sts
-$ platform-cli masternode-vote-dpns-name --dapi-url https://52.43.13.92:1443 --private-key voting_key.txt --pro-tx-hash 7a1ae04de7582262d9dea3f4d72bc24a474c6f71988066b74a41f17be5552652 --normalized-label testc0ntested --choice 8eTDkBhpQjHeqgbVeriwLeZr1tCa6yBGw76SckvD1cwc
+$ platform-cli withdraw --network testnet --dapi-url https://127.0.0.1:1443 --identity A1rgGVjRGuznRThdAA316VEEpKuVQ7mV8mBK1BFJvXnb --private-key private_key.txt --withdrawal-address yifJkXaxe7oM1NgBDTaXnWa6kXZAazBfjk --amount 40000
+$ platform-cli register-dpns-name --network testnet --dapi-url https://52.43.13.92:1443 --identity 8eTDkBhpQjHeqgbVeriwLeZr1tCa6yBGw76SckvD1cwc --private-key private_key.txt --name tesstst32423sts
+$ platform-cli masternode-vote-dpns-name --network testnet --dapi-url https://52.43.13.92:1443 --private-key voting_key.txt --pro-tx-hash 7a1ae04de7582262d9dea3f4d72bc24a474c6f71988066b74a41f17be5552652 --normalized-label testc0ntested --choice 8eTDkBhpQjHeqgbVeriwLeZr1tCa6yBGw76SckvD1cwc
 ```
 
 ### Credits Withdrawal
@@ -54,12 +54,14 @@ Withdraw credits from the Identity to the L1 Core chain
 Usage: platform-cli withdraw [OPTIONS]
 
 Options:
+      --network <NETWORK>
+          Network, mainnet or testnet [default: ]
       --dapi-url <DAPI_URL>
           DAPI GRPC Endpoint URL, ex. https://127.0.0.1:1443 [default: ]
       --identity <IDENTITY>
           Identity address, that initiate withdrawal [default: ]
       --private-key <PRIVATE_KEY>
-          Identity private key in WIF format [default: ]
+          Path to file with private key from Identity in WIF format [default: ]
       --withdrawal-address <WITHDRAWAL_ADDRESS>
           Core withdrawal address (P2PKH / P2SH) [default: ]
       --amount <AMOUNT>
@@ -82,9 +84,10 @@ Register an Identity Name in the Dash Platform DPNS system
 Usage: platform-cli register-dpns-name [OPTIONS]
 
 Options:
+      --network <NETWORK>          Network, mainnet or testnet [default: ]
       --dapi-url <DAPI_URL>        DAPI GRPC Endpoint URL, ex. https://127.0.0.1:1443 [default: ]
       --identity <IDENTITY>        Identity address that registers a name [default: ]
-      --private-key <PRIVATE_KEY>  Identity private key in WIF format [default: ]
+      --private-key <PRIVATE_KEY>  Path to file with private key from Identity in WIF format [default: ]
       --name <NAME>                Name to register (excluding .dash) [default: ]
   -h, --help                       Print help
 ```
@@ -100,12 +103,14 @@ Perform a masternode vote towards contested DPNS name
 Usage: platform-cli masternode-vote-dpns-name [OPTIONS]
 
 Options:
+      --network <NETWORK>
+          Network, mainnet or testnet [default: ]
       --dapi-url <DAPI_URL>
           DAPI GRPC Endpoint URL, ex. https://127.0.0.1:1443 [default: ]
       --pro-tx-hash <PRO_TX_HASH>
           ProTxHash of the Masternode performing a Vote, in hex [default: ]
       --private-key <PRIVATE_KEY>
-          Voting (or Owner) private key in WIF format [default: ]
+          Path to file with voting (or owner) private key in WIF format [default: ]
       --normalized-label <NORMALIZED_LABEL>
           Normalized label to vote upon (can be grabbed from https//dash.vote) [default: ]
       --choice <CHOICE>
