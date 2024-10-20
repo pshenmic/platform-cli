@@ -65,7 +65,7 @@ async fn set_logging_level(verbose: bool) {
 async fn main() {
     const VERSION: &str = env!("CARGO_PKG_VERSION");
 
-    info!("platform-cli {} (https://github.com/pshenmic/platform-cli)", VERSION);
+    println!("platform-cli {} (https://github.com/pshenmic/platform-cli)", VERSION);
 
     let args = Args::parse();
 
