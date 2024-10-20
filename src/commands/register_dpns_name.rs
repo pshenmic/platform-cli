@@ -119,6 +119,8 @@ impl RegisterDPNSNameCommand {
         let identity_public_keys = platform_grpc_client
             .get_identity_keys(identity.id()).await;
 
+        debug!("Finding matching IdentityPublicKey in the Identity against applied private key");
+
         let identity_public_key = identity_public_keys
             .iter()
             .filter(|key|  key.public_key_hash().unwrap() == <[u8; 20] as Into<[u8;20]>>::into(public_key.pubkey_hash().to_byte_array()))
@@ -126,6 +128,13 @@ impl RegisterDPNSNameCommand {
             .first()
             .ok_or(Error::IdentityPublicKeyHashMismatchError(IdentityPublicKeyHashMismatchError::from((identifier, public_key.pubkey_hash()))))?
             .clone();
+
+        debug!("Found matching IdentityPublicKey id: {}, key_type: {}, pubkeyhash: {}, purpose: {}, security_level: {}",
+            identity_public_key.id(),
+            identity_public_key.key_type(),
+            identity_public_key.public_key_hash().unwrap().to_lower_hex_string(),
+            identity_public_key.purpose(),
+            identity_public_key.security_level());
 
         let identity_contract_nonce = platform_grpc_client.get_identity_contract_nonce(identity.id(), dpns_contract.id()).await;
 
