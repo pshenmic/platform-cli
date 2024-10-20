@@ -5,6 +5,7 @@ mod factories;
 pub(crate) mod utils;
 mod errors;
 mod logger;
+mod constants;
 
 use clap::{Parser, Subcommand};
 use dpp::{BlsModule, ProtocolError, PublicKeyValidationError};

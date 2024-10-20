@@ -7,7 +7,7 @@ use dpp::dashcore::hashes::Hash;
 use dpp::dashcore::{Network};
 use dpp::dashcore::secp256k1::Secp256k1;
 use dpp::data_contract::accessors::v0::DataContractV0Getters;
-use dpp::data_contract::{DataContract, JsonValue};
+use dpp::data_contract::{DataContract};
 use dpp::data_contract::conversion::value::v0::DataContractValueConversionMethodsV0;
 use dpp::identifier::Identifier;
 use dpp::identity::accessors::IdentityGettersV0;
@@ -35,6 +35,7 @@ use crate::factories::Factories;
 use crate::grpc::PlatformGRPCClient;
 use crate::utils::{MyDefaultEntropyGenerator, Utils};
 use regex::Regex;
+use crate::constants::Constants;
 use crate::MockBLS;
 
 /// Register an Identity Name in the Dash Platform DPNS system.
@@ -91,10 +92,7 @@ impl RegisterDPNSNameCommand {
         let public_key = private_key.public_key(&secp);
         let identifier = Identifier::from_string(&self.identity, Base58).unwrap();
 
-        let dpns_data_contract_data = fs::read_to_string("dpns_contract.json").expect("Unable to read file");
-        let json_value = JsonValue::from_str(&dpns_data_contract_data).expect("Could not decode DPNS data contract json");
-        let raw_data_contract: Value = Value::from(json_value);
-        let dpns_contract = DataContract::from_value(raw_data_contract, true, PlatformVersion::latest()).unwrap();
+        let dpns_contract = DataContract::from_value(Constants::dpns_data_contract_value(), true, PlatformVersion::latest()).unwrap();
 
         let platform_grpc_client = PlatformGRPCClient::new(&self.dapi_url);
 
