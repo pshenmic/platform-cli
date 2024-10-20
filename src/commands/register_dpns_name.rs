@@ -5,6 +5,7 @@ use std::time::Duration;
 use clap::{ Parser};
 use dpp::dashcore::hashes::Hash;
 use dpp::dashcore::{Network};
+use dpp::dashcore::secp256k1::hashes::hex::DisplayHex;
 use dpp::dashcore::secp256k1::Secp256k1;
 use dpp::data_contract::accessors::v0::DataContractV0Getters;
 use dpp::data_contract::{DataContract};
@@ -12,6 +13,7 @@ use dpp::data_contract::conversion::value::v0::DataContractValueConversionMethod
 use dpp::identifier::Identifier;
 use dpp::identity::accessors::IdentityGettersV0;
 use dpp::identity::hash::IdentityPublicKeyHashMethodsV0;
+use dpp::identity::identity_public_key::accessors::v0::IdentityPublicKeyGettersV0;
 use dpp::identity::IdentityPublicKey;
 use dpp::platform_value::string_encoding::Encoding::Base58;
 use dpp::platform_value::{platform_value, Value};
@@ -22,7 +24,7 @@ use dpp::util::hash::hash_double;
 use dpp::util::strings::convert_to_homograph_safe_chars;
 use dpp::version::fee::vote_resolution_fund_fees::v1::VOTE_RESOLUTION_FUND_FEES_VERSION1;
 use dpp::version::PlatformVersion;
-use log::info;
+use log::{debug, info};
 use rand::rngs::StdRng;
 use rand::{Rng, SeedableRng};
 use sha256::digest;
@@ -36,7 +38,7 @@ use crate::grpc::PlatformGRPCClient;
 use crate::utils::{MyDefaultEntropyGenerator, Utils};
 use regex::Regex;
 use crate::constants::Constants;
-use crate::MockBLS;
+use crate::{MockBLS};
 
 /// Register an Identity Name in the Dash Platform DPNS system.
 #[derive(Parser)]
@@ -60,6 +62,10 @@ pub struct RegisterDPNSNameCommand {
     /// Name to register (excluding .dash)
     #[clap(long, default_value(""))]
     name: String,
+
+    /// Enable verbose logging for a debugging
+    #[clap(long)]
+    pub verbose: bool,
 }
 
 impl RegisterDPNSNameCommand {
@@ -84,6 +90,15 @@ impl RegisterDPNSNameCommand {
             return Err(Error::CommandLineArgumentMissingError(CommandLineArgumentMissingError::from("dapi_url")));
         }
 
+        let re = Regex::new(r"^[a-zA-Z01-]{3,19}$").unwrap();
+
+        let normalized_name = convert_to_homograph_safe_chars(&self.name);
+        let full_domain_name = format!("{}.dash", &self.name);
+        let is_contested = re.is_match(&self.name);
+
+        info!("Starting registering DPNS name process ({})", &self.network);
+        info!("Name: {}, Normalized Name: {}, Full Domain Name: {}, Is Contested: {}", &self.name, normalized_name.clone(), &full_domain_name, is_contested);
+
         let secp = Secp256k1::new();
 
         let network_type = Network::from_str(&self.network).expect("Could not parse network");
@@ -99,8 +114,12 @@ impl RegisterDPNSNameCommand {
         let identity = platform_grpc_client
             .get_identity_by_identifier(identifier).await?;
 
+        debug!("Identity with identifier {} found in the network", identity.id());
+
         let identity_public_keys = platform_grpc_client
             .get_identity_keys(identity.id()).await;
+
+        debug!("Finding matching IdentityPublicKey in the Identity against applied private key");
 
         let identity_public_key = identity_public_keys
             .iter()
@@ -110,7 +129,16 @@ impl RegisterDPNSNameCommand {
             .ok_or(Error::IdentityPublicKeyHashMismatchError(IdentityPublicKeyHashMismatchError::from((identifier, public_key.pubkey_hash()))))?
             .clone();
 
+        debug!("Found matching IdentityPublicKey id: {}, key_type: {}, pubkeyhash: {}, purpose: {}, security_level: {}",
+            identity_public_key.id(),
+            identity_public_key.key_type(),
+            identity_public_key.public_key_hash().unwrap().to_lower_hex_string(),
+            identity_public_key.purpose(),
+            identity_public_key.security_level());
+
         let identity_contract_nonce = platform_grpc_client.get_identity_contract_nonce(identity.id(), dpns_contract.id()).await;
+
+        debug!("Identity contract nonce for identifier {} is {}", identity.id(), identity_contract_nonce.clone());
 
         let mut rng = StdRng::from_entropy();
 
@@ -118,9 +146,11 @@ impl RegisterDPNSNameCommand {
 
         let mut salted_domain_buffer: Vec<u8> = vec![];
         salted_domain_buffer.extend(salt);
-        salted_domain_buffer.extend((convert_to_homograph_safe_chars(&self.name) + ".dash").as_bytes());
+        salted_domain_buffer.extend((normalized_name.clone() + ".dash").as_bytes());
 
         let salted_domain_hash = hash_double(salted_domain_buffer);
+
+        debug!("Salted Domain Hash for {} is {}", normalized_name.clone() + ".dash", salted_domain_hash.to_lower_hex_string());
 
         let generator = MyDefaultEntropyGenerator{};
         let entropy = generator.generate().unwrap();
@@ -140,14 +170,26 @@ impl RegisterDPNSNameCommand {
             transitions: vec![pre_order_transition]
         });
 
+        debug!("Signing preorder transaction with IdentityPublicKey id: {}, key_type: {}, pubkeyhash: {}, purpose: {}, security_level: {}",
+            identity_public_key.id(),
+            identity_public_key.key_type(),
+            identity_public_key.public_key_hash().unwrap().to_lower_hex_string(),
+            identity_public_key.purpose(),
+            identity_public_key.security_level());
         preorder_state_transition.sign(identity_public_key, private_key.to_bytes().as_slice(), &MockBLS{}).unwrap();
 
         let preorder_buffer = preorder_state_transition.clone().serialize_to_bytes().unwrap();
+        let preorder_hex = preorder_buffer.clone();
+        let preorder_hash = digest(preorder_buffer.clone());
+
+        debug!("Signed Preorder Transaction Hex: {}", preorder_hex.to_lower_hex_string());
+        info!("Preorder Transaction Hash: {}", preorder_hash);
 
         platform_grpc_client.broadcast_state_transition(preorder_state_transition).await;
 
-        info!("Successfully broadcasted preorder document, waiting 15s for confirmation, tx hash: {}", hex::encode(digest(preorder_buffer)));
+        info!("Preorder document has been successfully sent into the network");
 
+        info!("Waiting 20s for a confirmation in the network");
         sleep(Duration::from_millis(20000)).await;
 
         let domain_document = Factories::create_document(dpns_contract.id(), "domain", identity.id(),
@@ -161,18 +203,20 @@ impl RegisterDPNSNameCommand {
               "subdomainRules": {
                 "allowSubdomains": false
               },
-              "normalizedLabel": convert_to_homograph_safe_chars(&self.name),
+              "normalizedLabel": normalized_name.clone(),
               "parentDomainName": "dash",
               "normalizedParentDomainName": "dash"
-        }), Vec::from(entropy));
+            }
+         ), Vec::from(entropy));
 
-
-        let re = Regex::new(r"^[a-zA-Z01-]{3,19}$").unwrap();
-
-        let prefunding_voting_balance = match !re.is_match(&self.name) {
+        let prefunding_voting_balance = match is_contested {
             true => {Some((String::from("parentNameAndLabel"), VOTE_RESOLUTION_FUND_FEES_VERSION1.contested_document_vote_resolution_fund_required_amount))},
             false => None
         };
+
+        if !prefunding_voting_balance.is_none() {
+            info!("Chosen name was detected as a contested resource, including 0.2 Dash in credits as a prefund for voting process");
+        }
 
         let domain_document_transition = Factories::document_create_transition(
             domain_document,
@@ -186,13 +230,28 @@ impl RegisterDPNSNameCommand {
             transitions: vec![domain_document_transition]
         });
 
+        debug!("Signing domain transaction with IdentityPublicKey id: {}, key_type: {}, pubkeyhash: {}, purpose: {}, security_level: {}",
+            identity_public_key.id(),
+            identity_public_key.key_type(),
+            identity_public_key.public_key_hash().unwrap().to_lower_hex_string(),
+            identity_public_key.purpose(),
+            identity_public_key.security_level());
         domain_state_transition.sign(identity_public_key, private_key.to_bytes().as_slice(), &MockBLS{}).unwrap();
 
         let domain_buffer = domain_state_transition.clone().serialize_to_bytes().unwrap();
+        let domain_hex = domain_buffer.clone();
+        let domain_hash = digest(domain_buffer.clone());
+        debug!("Signed Domain Transaction Hex: {}", domain_hex.to_lower_hex_string());
+        info!("Domain Transaction Hash: {}", domain_hash);
 
         platform_grpc_client.broadcast_state_transition(domain_state_transition).await;
 
-        info!("Successfully broadcasted domain document, tx hash: {}", hex::encode(digest(domain_buffer)));
+        info!("Successfully registered DPNS Name {} for Identity {}", full_domain_name, identity.id().to_string(Base58));
+        info!("Please check your transactions on the Platform Explorer to make sure they all finished successfully");
+
+        if is_contested {
+            info!("Your name was registered through the contested resource process, please check if your name appears on the https://dash.vote now");
+        }
 
         Ok(())
     }
