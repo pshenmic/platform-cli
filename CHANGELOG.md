@@ -7,6 +7,8 @@ Accept different private key encoding types in the input file
 * Accept all possible private key encoding types (base64, hex, wif) by @pshenmic in https://github.com/pshenmic/platform-cli/pull/8
 * Hardcode DPNS data contract in the code by @pshenmic in https://github.com/pshenmic/platform-cli/pull/9
 
+## Breaking Changes
+* Introduced new required `--network` flag
 
 **Full Changelog**: https://github.com/pshenmic/platform-cli/compare/v0.1.3...v0.1.4
 
