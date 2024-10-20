@@ -1,5 +1,15 @@
 # CHANGELOG
 
+# v0.1.5
+Verbose logging and fix for mainnet network type (was only accepting `dash` as a value for mainnet)
+
+## What's Changed
+* Add more verbose logging to the command by @pshenmic in https://github.com/pshenmic/platform-cli/pull/10
+* Allow mainnet as a network type by @pshenmic in https://github.com/pshenmic/platform-cli/pull/11
+
+
+**Full Changelog**: https://github.com/pshenmic/platform-cli/compare/v0.1.4...v0.1.5
+
 # v0.1.4
 Accept different private key encoding types in the input file
 
