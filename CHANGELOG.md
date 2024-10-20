@@ -1,5 +1,15 @@
 # CHANGELOG
 
+# v0.1.4
+Accept different private key encoding types in the input file
+
+## What's Changed
+* Accept all possible private key encoding types (base64, hex, wif) by @pshenmic in https://github.com/pshenmic/platform-cli/pull/8
+* Hardcode DPNS data contract in the code by @pshenmic in https://github.com/pshenmic/platform-cli/pull/9
+
+
+**Full Changelog**: https://github.com/pshenmic/platform-cli/compare/v0.1.3...v0.1.4
+
 # v0.1.3
 Fix GLIBC issue for older systems (now being build under Ubuntu 20.04), and fix for whitespaces or newlines in the input file data
 

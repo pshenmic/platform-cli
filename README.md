@@ -1,4 +1,4 @@
-# platform-cli v0.1.3
+# platform-cli v0.1.4
 
 A binary application to create, sign and broadcast Dash Platform state transition from your computer.
 
