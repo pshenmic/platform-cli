@@ -12,12 +12,10 @@ use dpp::{BlsModule, ProtocolError, PublicKeyValidationError};
 use crate::commands::masternode_vote_dpns_name::MasternodeVoteDPNSNameCommand;
 use crate::commands::register_dpns_name::RegisterDPNSNameCommand;
 use crate::commands::withdraw::WithdrawCommand;
-use log::{LevelFilter};
+use log::{info, LevelFilter};
 use crate::logger::Logger;
 
-pub struct MockBLS {
-
-}
+pub struct MockBLS {}
 
 impl BlsModule for MockBLS {
     fn validate_public_key(&self, pk: &[u8]) -> Result<(), PublicKeyValidationError> {
@@ -48,22 +46,42 @@ struct Args {
 enum MyCommand {
     Withdraw(WithdrawCommand),
     RegisterDPNSName(RegisterDPNSNameCommand),
-    MasternodeVoteDPNSName(MasternodeVoteDPNSNameCommand)
+    MasternodeVoteDPNSName(MasternodeVoteDPNSNameCommand),
 }
 
 static LOGGER: Logger = Logger;
 
+async fn set_logging_level(verbose: bool) {
+    let level = match verbose {
+        true => LevelFilter::Debug,
+        false => LevelFilter::Info
+    };
+
+    log::set_logger(&LOGGER)
+        .map(|()| log::set_max_level(level)).unwrap();
+}
+
 #[tokio::main]
 async fn main() {
-    log::set_logger(&LOGGER)
-        .map(|()| log::set_max_level(LevelFilter::Info)).unwrap();
+    const VERSION: &str = env!("CARGO_PKG_VERSION");
+
+    info!("platform-cli {} (https://github.com/pshenmic/platform-cli)", VERSION);
 
     let args = Args::parse();
 
     let result = match args.cmd {
-        MyCommand::Withdraw(x) => x.run().await,
-        MyCommand::RegisterDPNSName(x) => x.run().await,
-        MyCommand::MasternodeVoteDPNSName(x) => x.run().await,
+        MyCommand::Withdraw(x) => {
+            set_logging_level(x.verbose).await;
+            x.run().await
+        }
+        MyCommand::RegisterDPNSName(x) => {
+            set_logging_level(x.verbose).await;
+            x.run().await
+        },
+        MyCommand::MasternodeVoteDPNSName(x) => {
+            set_logging_level(x.verbose).await;
+            x.run().await
+        },
     };
 
     match result {

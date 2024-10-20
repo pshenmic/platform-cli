@@ -48,6 +48,10 @@ pub struct MasternodeVoteDPNSNameCommand {
     /// It can be an Identifier you are voting towards (ex. BMJWm8wKmbApR7nQ6q7RG3HgD8maJ8t7B4yWBKRe7aZ6), or Lock, or Abstain
     #[clap(long, default_value(""))]
     choice: String,
+
+    /// Verbose
+    #[clap(long)]
+    pub verbose: bool,
 }
 
 const DPNS_DATA_CONTRACT_IDENTIFIER: &str = "GWRSAVFMjXx8HpQFaNJMqBV7MBgMK4br5UESsB4S31Ec";

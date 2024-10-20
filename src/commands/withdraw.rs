@@ -49,6 +49,10 @@ pub struct WithdrawCommand {
     /// Amount of credits to withdraw
     #[clap(long, default_value(""))]
     amount: String,
+
+    /// Verbose
+    #[clap(long)]
+    pub verbose: bool,
 }
 
 impl WithdrawCommand {
