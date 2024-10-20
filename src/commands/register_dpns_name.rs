@@ -101,7 +101,8 @@ impl RegisterDPNSNameCommand {
 
         let secp = Secp256k1::new();
 
-        let network_type = Network::from_str(&self.network).expect("Could not parse network");
+        let network = if &self.network == "mainnet" { "dash" } else { &self.network  };
+        let network_type = Network::from_str(network).expect("Could not parse network");
         let private_key_data = fs::read_to_string(&self.private_key).expect("Unable to read private key file");
         let private_key = Utils::decode_private_key_from_input_string(private_key_data.as_str(), network_type)?;
         let public_key = private_key.public_key(&secp);
