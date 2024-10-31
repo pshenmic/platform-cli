@@ -1,7 +1,7 @@
 use anyhow::Context;
 use base64::Engine;
 use base64::engine::general_purpose;
-use dpp::dashcore::{Network, PrivateKey};
+use dpp::dashcore::{Network, PrivateKey, TxIn};
 use dpp::util::entropy_generator::EntropyGenerator;
 use getrandom::getrandom;
 use crate::errors::cli_argument_invalid_input::CommandLineArgumentInvalidInput;
@@ -39,10 +39,21 @@ impl Utils {
             } else if base64.len() > 0 {
                 PrivateKey::from_slice(base64.as_slice(), network).expect("Unexpected error, could not construct private key from base64 after validation")
             } else {
-                return Err(Error::CommandLineArgumentInvalidInput(CommandLineArgumentInvalidInput::from("Could not decode private key type from file (should be in WIF or hex)")))
+                return Err(Error::CommandLineArgumentInvalidInput(CommandLineArgumentInvalidInput::from("Could not decode private key type from file (should be in WIF or hex)")));
             }
         };
 
         Ok(private_key)
+    }
+    pub fn coin_select(inputs: Vec<(TxIn, u64)>, needed_amount: u64, fee: u64) -> (u64, u64) {
+        return inputs.into_iter().fold((0, 0), |(output_amount, change_amount), (_, satoshis)| {
+            if output_amount + satoshis + fee >= needed_amount {
+                let change_amount = (output_amount + satoshis) - needed_amount - fee;
+
+                return (needed_amount, change_amount)
+            }
+
+            return (output_amount + satoshis, 0)
+        })
     }
 }

@@ -6,6 +6,7 @@ pub(crate) mod utils;
 mod errors;
 mod logger;
 mod constants;
+mod api;
 
 use clap::{Parser, Subcommand};
 use dpp::{BlsModule, ProtocolError, PublicKeyValidationError};
@@ -13,6 +14,7 @@ use crate::commands::masternode_vote_dpns_name::MasternodeVoteDPNSNameCommand;
 use crate::commands::register_dpns_name::RegisterDPNSNameCommand;
 use crate::commands::withdraw::WithdrawCommand;
 use log::{info, LevelFilter};
+use crate::commands::register_identity::RegisterIdentityCommand;
 use crate::logger::Logger;
 
 pub struct MockBLS {}
@@ -45,6 +47,7 @@ struct Args {
 #[derive(Subcommand)]
 enum MyCommand {
     Withdraw(WithdrawCommand),
+    RegisterIdentity(RegisterIdentityCommand),
     RegisterDPNSName(RegisterDPNSNameCommand),
     MasternodeVoteDPNSName(MasternodeVoteDPNSNameCommand)
 }
@@ -82,6 +85,10 @@ async fn main() {
             set_logging_level(x.verbose).await;
             x.run().await
         },
+        MyCommand::RegisterIdentity(x) => {
+            set_logging_level(x.verbose).await;
+            x.run().await
+        }
     };
 
     match result {
