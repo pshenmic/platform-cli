@@ -1,11 +1,12 @@
 use dapi_grpc::platform::v0::{get_identity_request, get_identity_response, GetIdentityRequest};
 use dapi_grpc::platform::v0::get_identity_request::GetIdentityRequestV0;
-use dapi_grpc::platform::v0::get_identity_response::get_identity_response_v0;
+use dapi_grpc::platform::v0::get_identity_response::{get_identity_response_v0, Version};
 use dpp::identity::Identity;
 use dpp::prelude::Identifier;
 use dpp::serialization::PlatformDeserializable;
-use rs_dapi_client::{DapiClientError, DapiRequestExecutor, RequestSettings};
+use rs_dapi_client::{DapiClientError, DapiRequestExecutor, ExecutionError, ExecutionResult, RequestSettings};
 use rs_dapi_client::address_list::AddressListError;
+use rs_dapi_client::transport::TransportError;
 use tonic::{Code};
 use crate::errors::dapi_response_error::DapiResponseError;
 use crate::errors::Error;
@@ -21,19 +22,19 @@ impl PlatformGRPCClient {
             }))
         };
 
-        let response = self.dapi_client.execute(request, RequestSettings::default()).await;
+        let execution_result = self.dapi_client.execute(request, RequestSettings::default()).await;
 
-        let result = response
-            .map(|get_identity_response|{
-                let data = get_identity_response.version.unwrap();
+        let result = execution_result
+            .map(|execution_response| {
+                let get_identity_response = execution_response.inner;
 
-                let identity: Identity = match data {
-                    get_identity_response::Version::V0(v0) => {
-                        let result = v0.result.unwrap();
+                match get_identity_response.version.unwrap() {
+                    Version::V0(get_identity_response_v0) => {
+                        let result = get_identity_response_v0.result.unwrap();
 
                         match result {
                             get_identity_response_v0::Result::Identity(bytes) => {
-                                Identity::deserialize_from_bytes(bytes.as_slice()).unwrap()
+                                return Identity::deserialize_from_bytes(bytes.as_slice()).unwrap()
                             }
                             get_identity_response_v0::Result::Proof(_) => {
                                 panic!("We don't expect proofs")
@@ -41,30 +42,31 @@ impl PlatformGRPCClient {
                         }
                     }
                 };
-
-                return identity
             })
-            .map_err(|dapi_client_error| {
-                match dapi_client_error {
-                    DapiClientError::Transport(status, _) => {
-                        if status.code() == Code::NotFound {
-                            return Error::IdentityNotFoundError(IdentityNotFoundError::from(identifier))
-                        }
+            .map_err(|execution_error| {
+                match execution_error.inner {
+                    DapiClientError::Transport(transport_error) => { match transport_error {
+                            TransportError::Grpc(status) => {
+                                if status.code() == Code::NotFound {
+                                    return Error::IdentityNotFoundError(IdentityNotFoundError::from(identifier));
+                                }
 
-                        return Error::DapiResponseError(DapiResponseError::from(format!("Unknown DAPI Response, status code: {}, message: {}", status.code(), status.message()).as_str()))
-                    }
-                    DapiClientError::NoAvailableAddresses => {
-                        return Error::DapiResponseError(DapiResponseError::from("No available addresses"))
-                    }
-                    DapiClientError::AddressList(addresses) => {
-                        return match addresses {
-                            AddressListError::AddressNotFound(url) => {
-                                Error::DapiResponseError(DapiResponseError::from(format!("Invalid DAPI endpoint address {}", url.to_string()).as_str()))
+                                return Error::DapiResponseError(DapiResponseError::from(format!("Unknown DAPI Response, status code: {}, message: {}", status.code(), status.message()).as_str()));
                             }
                         }
                     }
+                    DapiClientError::NoAvailableAddresses => {
+                        return Error::DapiResponseError(DapiResponseError::from("No available addresses"));
+                    }
+                    DapiClientError::AddressList(addresses) => {
+                        return match addresses {
+                            AddressListError::InvalidAddressUri(url) => {
+                                Error::DapiResponseError(DapiResponseError::from(format!("Invalid DAPI endpoint address {}", url.to_string()).as_str()))
+                            }
+                        };
+                    }
                     DapiClientError::Mock(_) => {
-                        return Error::DapiResponseError(DapiResponseError::from("Mock dapi client response is not supported"))
+                        return Error::DapiResponseError(DapiResponseError::from("Mock dapi client response is not supported"));
                     }
                 }
             });

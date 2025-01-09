@@ -11,7 +11,7 @@ pub mod dapi_response_error;
 pub mod identity_public_key_hash_mismatch_error;
 pub mod cli_argument_invalid_input;
 
-
+#[derive(Debug)]
 pub enum Error {
     CommandLineArgumentMissingError(CommandLineArgumentMissingError),
     CommandLineArgumentInvalidInput(CommandLineArgumentInvalidInput),
