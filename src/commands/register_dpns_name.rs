@@ -118,7 +118,7 @@ impl RegisterDPNSNameCommand {
         debug!("Identity with identifier {} found in the network", identity.id());
 
         let identity_public_keys = platform_grpc_client
-            .get_identity_keys(identity.id()).await;
+            .get_identity_keys(identity.id()).await?;
 
         debug!("Finding matching IdentityPublicKey in the Identity against applied private key");
 
@@ -137,7 +137,7 @@ impl RegisterDPNSNameCommand {
             identity_public_key.purpose(),
             identity_public_key.security_level());
 
-        let identity_contract_nonce = platform_grpc_client.get_identity_contract_nonce(identity.id(), dpns_contract.id()).await;
+        let identity_contract_nonce = platform_grpc_client.get_identity_contract_nonce(identity.id(), dpns_contract.id()).await.unwrap();
 
         debug!("Identity contract nonce for identifier {} is {}", identity.id(), identity_contract_nonce.clone());
 

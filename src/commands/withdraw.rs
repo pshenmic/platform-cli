@@ -1,7 +1,7 @@
 use std::fs;
 use std::str::FromStr;
 use clap::Parser;
-use dpp::dashcore::{Network};
+use dpp::dashcore::{Address, Network};
 use dpp::dashcore::hashes::Hash;
 use dpp::dashcore::secp256k1::hashes::hex::DisplayHex;
 use dpp::dashcore::secp256k1::Secp256k1;
@@ -11,7 +11,7 @@ use dpp::identity::core_script::CoreScript;
 use dpp::identity::hash::IdentityPublicKeyHashMethodsV0;
 use dpp::identity::identity_public_key::accessors::v0::IdentityPublicKeyGettersV0;
 use dpp::identity::IdentityPublicKey;
-use dpp::platform_value::string_encoding::Encoding::{Base58};
+use dpp::platform_value::string_encoding::Encoding::{Base58, Hex};
 use dpp::serialization::{PlatformSerializable};
 use dpp::state_transition::identity_credit_withdrawal_transition::v1::IdentityCreditWithdrawalTransitionV1;
 use dpp::state_transition::StateTransition;
@@ -103,7 +103,7 @@ impl WithdrawCommand {
         debug!("Identity with identifier {} found in the network", identity.id());
 
         let identity_public_keys = platform_grpc_client
-            .get_identity_keys(identity.id()).await;
+            .get_identity_keys(identity.id()).await.unwrap();
 
         debug!("Finding matching IdentityPublicKey in the Identity against applied private key");
 
@@ -122,18 +122,19 @@ impl WithdrawCommand {
             identity_public_key.purpose(),
             identity_public_key.security_level());
 
-        let nonce = platform_grpc_client.get_identity_nonce(identity.id()).await;
+        let nonce = platform_grpc_client.get_identity_nonce(identity.id()).await?;
 
         debug!("Identity nonce for identifier {} is {}", identity.id(), nonce.clone());
 
-        let output_script = CoreScript::new_p2pkh(public_key.pubkey_hash().into());
+        let address: Address = Address::from_str(&self.withdrawal_address).unwrap()
+                       .require_network(network_type).unwrap();
 
         let identity_credit_withdrawal_transition = IdentityCreditWithdrawalTransitionV1 {
             identity_id: identifier,
             amount: self.amount,
             core_fee_per_byte: 1,
             pooling: Pooling::Never,
-            output_script: Some(output_script),
+            output_script: Some(CoreScript::from_bytes(address.script_pubkey().to_bytes())),
             nonce: &nonce + 1,
             user_fee_increase: 0,
             signature_public_key_id: 0,

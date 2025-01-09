@@ -4,7 +4,7 @@ version = "0.1.5"
 edition = "2021"
 
 [dependencies]
-dpp = { git = "https://github.com/dashpay/platform", branch = "fix/address-list-error" , features = ["state-transition-signing", "data-contract-value-conversion"]}
+dpp = { git = "https://github.com/dashpay/platform", branch = "fix/address-list-error" , features = ["all_features"]}
 rs-dapi-client = { git = "https://github.com/dashpay/platform", branch = "fix/address-list-error" }
 dapi-grpc = { git = "https://github.com/dashpay/platform", branch = "fix/address-list-error" }
 simple-signer = { git = "https://github.com/dashpay/platform", branch = "fix/address-list-error" }
@@ -21,3 +21,8 @@ getrandom = "0.2.15"
 anyhow = "1.0.89"
 log = "0.4.22"
 regex = "1.11.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = { version = "1.0" }
+reqwest = { version = "0.12.9", features = ["json"] }
+dashcore-rpc = { path = "../rust-dashcore-rpc/client" }
+rust_decimal = "1.36.0"

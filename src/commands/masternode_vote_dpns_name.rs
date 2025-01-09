@@ -103,7 +103,7 @@ impl MasternodeVoteDPNSNameCommand {
         debug!("Identity with identifier {} found in the network", identity.id());
 
         let identity_public_keys = platform_grpc_client
-            .get_identity_keys(identity.id()).await;
+            .get_identity_keys(identity.id()).await?;
 
         debug!("Finding matching IdentityPublicKey in the Identity against applied private key");
 
@@ -122,7 +122,7 @@ impl MasternodeVoteDPNSNameCommand {
             identity_public_key.purpose(),
             identity_public_key.security_level());
 
-        let nonce = platform_grpc_client.get_identity_nonce(identity.id()).await;
+        let nonce = platform_grpc_client.get_identity_nonce(identity.id()).await?;
 
         debug!("Identity nonce for identifier {} is {}", identity.id(), nonce.clone());
 
